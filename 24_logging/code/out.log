@@ -1,0 +1,37 @@
+2023-02-14 11:00:56.064 | ERROR    | __main__:nested:13 - Division by zero error!
+Traceback (most recent call last):
+
+  File "/home/artem/edu/kd_foss/logging/code/loguru_sample.py", line 15, in <module>
+    nested(2)
+    └ <function nested at 0x7f5fd872b490>
+
+> File "/home/artem/edu/kd_foss/logging/code/loguru_sample.py", line 11, in nested
+    func(5, c)
+    │       └ 2
+    └ <function func at 0x7f5fd8803d90>
+
+  File "/home/artem/edu/kd_foss/logging/code/loguru_sample.py", line 7, in func
+    return (a / b) + func(a, b-1)
+            │   │    │    │  └ 2
+            │   │    │    └ 5
+            │   │    └ <function func at 0x7f5fd8803d90>
+            │   └ 2
+            └ 5
+
+  File "/home/artem/edu/kd_foss/logging/code/loguru_sample.py", line 7, in func
+    return (a / b) + func(a, b-1)
+            │   │    │    │  └ 1
+            │   │    │    └ 5
+            │   │    └ <function func at 0x7f5fd8803d90>
+            │   └ 1
+            └ 5
+
+  File "/home/artem/edu/kd_foss/logging/code/loguru_sample.py", line 7, in func
+    return (a / b) + func(a, b-1)
+            │   │    │    │  └ 0
+            │   │    │    └ 5
+            │   │    └ <function func at 0x7f5fd8803d90>
+            │   └ 0
+            └ 5
+
+ZeroDivisionError: division by zero
