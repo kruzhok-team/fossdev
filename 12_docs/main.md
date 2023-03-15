@@ -10,7 +10,7 @@
 
 ![titles](./img/titles.png)
 
-[Можно](https://www.markdownguide.org/basic-syntax/#alternate-syntax) обозначать заголовки через подчеркивания. **Хорошим тоном** считается отделение заголовка от текста выше и ниже, а также отделение знака решетки от: 
+[Можно](https://www.markdownguide.org/basic-syntax/#alternate-syntax) обозначать заголовки через подчеркивания. **Хорошим тоном** считается отделение заголовка от текста выше и ниже, а также отделение знака решетки от текста заголовка: 
 
 ```
 ...какой-то текст до.
@@ -135,7 +135,7 @@ def foo():
 Сейчас будет неожиданно. Но дальше нам будет нужен другой язык разметки `reStructedText`. Для тех, кто потратил время на материал выше, будет [несложно](https://docs.open-mpi.org/en/v5.0.x/developers/rst-for-markdown-expats.html) освоить и `reStructedText`. Причины, по которым мы описали `Markdown` и затем предложили переключиться на `reStructedText`, две:
 
 1. Курс написан с использованием `markdown`
-2. Инструмент, который соберет документацию для нашего пакета и сделает из нее красивые `html`-страницы, работает с файлами `reStructuredText`
+2. Инструмент (sphinx), который соберет документацию для нашего пакета и сделает из нее красивые `html`-страницы или `pdf`, работает нативно с файлами `reStructuredText`. Для работы с `markdown` требуется подключать дополнительный плагин.
 
 Вы можете изучить отличия чуть позже, сейчас мы возьмем open source [конвертер](https://github.com/miyakogi/m2r#sphinx-integration) `md` в `rst` и используем его. Для README это вполне рабочий вариант. Серьезную документацию лучше сразу писать в формате `rst`.
 
@@ -221,3 +221,61 @@ dumping object inventory... готово
 
 После этого должна открыться страница, на которой, кроме всего прочего, мы можем увидеть README.
 
+## Markdown и sphinx
+
+Ниже приведены шаги (в ОС Linux) чтобы настроить окружение для сборки документации markdown с помощью sphinx. Мы использовали этот подход при сборке данного документа. Создайте виртуальное окружение (опционально):
+
+```bash
+conda create -n sphinx_md python=3.10
+conda activate sphinx_md
+```
+
+Установите sphinx и поддержку markdown:
+
+```bash 
+pip install sphinx
+pip install --upgrade myst-parser
+
+```
+
+Укажите какие файлы должны войти в документацию:
+
+```bash
+.. toolchain documentation master file, created by
+   sphinx-quickstart on Wed Mar  1 10:24:16 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to toolchain's documentation!
+=====================================
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Contents:
+
+  00_terms/main.md
+  01_open_source/main.md
+  
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+```
+
+Соберите html (находясь в корневой директории проекта):
+
+```bash
+make html
+```
+
+В корневой директории появится папка build, где будет находиться собранная документация.
+
+Для сборки pdf установите latexmk и поддержку кириллицы:
+
+```bash
+sudo apt install latexmk
+sudo apt install texlive-lang-cyrillic
+make latexpdf
+```

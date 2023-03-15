@@ -5,14 +5,15 @@
 ### Приложение (англ. - Application)
 
 По-английски это Application или app. Последнее часто используется в при написании приложений. Например, при написании **бэкэнда** используется именно это имя для того, чтобы обозначить главное приложение.
+
 ``` python
-    from fastapi import FastAPI
-    
-    app = FastAPI()
-    
-    @app.get("/")
-    async def root():
-        return {"message": "Hello World"}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 ```
 
 ### Модуль/Пакет/Библиотека/Фреймворк (англ. - Module/Package/Library/Framework)
@@ -57,11 +58,11 @@ def plot_dots(data):
 
 **Библиотека**  это общий термин для кода, который можно переиспользовать. Мы все пишем код и собираем их в модули и пакеты, но это не значит, что наш код можно считать библиотекой. Для этого он должен обладать некоторой долей универсальности, определенным оформлением и другими элементами, например покрытие тестами. Т.е. библиотека обязательно является пакетом, но не каждый пакет можно считать библиотекой. Например на сайте [numpy](https://numpy.org/) написано что это пакет:
 
-    NumPy is the fundamental Python package for scientific computing
+>NumPy is the fundamental Python package for scientific computing
 
 При этом на сайте другого популярного проекта [matplotlib](https://matplotlib.org/) говорится что это библиотека:
 
-    Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python
+>Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python
 
 Поэтому есть мнение, что библиотека это *пакет с пакетами*, т.е. что-то что обладает более разносторонней функциональностью чем пакет.
 
@@ -71,55 +72,56 @@ def plot_dots(data):
 ### Парадигма программирования (англ. - programming paradigm)
 
 Способ как мы смотрим на то, что происходит при разработке. Например с точки зрения водителя улица, через которую он едет *транзитом*, это ширина проезжей части дороги, количество светофоров и прочее. Но улица на которой расположен пункт назначения уже рассматривает водителем с точки зрения удобности парковки, хотя на транзитной улице тоже есть парковочные места. Т.е. на одну и туже сущность *улицу* мы можем смотреть под разными углами, с точки зрения того что сейчас для нас важно. *Парадигма программирования* это способ описать задачу, например данные и действия над ними. Рассмотрим на примере процедурной и объектно-ориентированной парадигм. **Процедурное** программирование, описывает список действий (процедур), которые мы предпринимаем для достижения цели. **Объектно-ориентированное** программирование строится вокруг объектов и их свойств, здесь мы применяем такие термины как Класс, Экземпляр (Объект), Поле (Аттрибут), Метод.  **Объектно-ориентированное** программирование наиболее часто используемый подход, хотя существуют задачи ([1](https://www.techtarget.com/searchapparchitecture/definition/reactive-programming), [2](https://docs.confluent.io/platform/current/tutorials/examples/microservices-orders/docs/index.html)), где решение задач описывается лучше в других парадигмах. Подробнее об ООП на примере Python читайте в [статье](https://towardsdatascience.com/python-procedural-or-object-oriented-programming-42c66a008676). На практике мы можем смешивать парадигмы, если это не вредит поддерживаемости кода. Ниже приведен пример решения одной и той же задачи, используя разные парадигмы:
+
 ``` python
-    # PROCEDURAL
-    def average_age(table):
-        average = 0
-        count = 0
-        for item in table:
-            average = average + item[1]
-            count = count + 1
-        return average / count
-    
-    people = [("Ivan", 24), ("Mary", 20), ("Alex", 21), ("Sara", 29)]
-    print("Average age:", average_age(people))
+# PROCEDURAL
+def average_age(table):
+    average = 0
+    count = 0
+    for item in table:
+        average = average + item[1]
+        count = count + 1
+    return average / count
+
+people = [("Ivan", 24), ("Mary", 20), ("Alex", 21), ("Sara", 29)]
+print("Average age:", average_age(people))
 ```
 ``` python
-    # OOP
-    class Person:
+# OOP
+class Person:
 
-        def __init__(self, name, age):
-            self.name = name
-            self.age = age
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
 
-    class Workers:
+class Workers:
 
-        def __init__(self):
-            self.workers = []
+    def __init__(self):
+        self.workers = []
 
-        def add(self, worker):
-            self.workers.append(worker)
+    def add(self, worker):
+        self.workers.append(worker)
 
-        def get_average_age(self):
-            age_sum = 0
-            for worker in self.workers:
-                age_sum = age_sum + worker.age
-            return age_sum / len(self.workers)
+    def get_average_age(self):
+        age_sum = 0
+        for worker in self.workers:
+            age_sum = age_sum + worker.age
+        return age_sum / len(self.workers)
 ``` 
 ```python    
-    workers = Workers()
-    workers.add(Person(name="Ivan", age = 24))
-    workers.add(Person(name="Mary", age = 20))
-    workers.add(Person(name="Alex", age = 21))
-    workers.add(Person(name="Sara", age = 29))
+workers = Workers()
+workers.add(Person(name="Ivan", age = 24))
+workers.add(Person(name="Mary", age = 20))
+workers.add(Person(name="Alex", age = 21))
+workers.add(Person(name="Sara", age = 29))
 
-    print("Average age:", workers.get_average_age())
+print("Average age:", workers.get_average_age())
 ```
+
 Что такое?! Почему в ООП больше кода, когда это такая классная парадигма. Все верно, кода больше, но он лучше структурирован, и нужно думать не количестве кода, а о том, насколько его легко читать и насколько легко его поддерживать. Например, средний возраст - это характеристика группы людей, поэтому мы пишем метод в `Workers`, а если мы хотим написать метод, который увеличит возраст сотрудника в день его рождения мы идем в класс `Person`. Так же в **процедурном** программировании часто возникают конструкции типа `item[1]`, и мы должны помнить, что возраст - это индекс 1 (а не 0, индексы нумеруются от нуля). В **объектно-ориентированном** мы храним, т.е. мы работаем не с большой таблицей данных, а структурируем информацию в том виде, с которым принято работать в той или иной сфере. Подумайте, как бы вы решили следующие задачи: 
 
   * храним не возраст, а дату рождения, нужно по-прежнему знать возраст;
   * хотим уволить :( человека.
-
 
 ### Статическое и динамическое типизирование
 
@@ -165,22 +167,25 @@ def fib_hint(n: int) -> Iterator[int]:
 
 Оно должно быть. Рассмотрим здесь несколько важных терминов: **Покрытие тестами** (англ. - Test Coverage) - доля кода, которая покрыта тестами, т.е. та часть кода, которую мы действительно выполняем с использованием тестовых данных. Ниже приведен пример на C++: код скомпилируется, но при этом его нельзя выполнить без ошибки. Если бы функция `foo` была покрыта тестами, мы бы увидели ошибку сразу.
 
-    #include <iostream>
-    
-    int main() {
-        std::cout << "Hello World!";
-        return 0;
-    }
-    
-    float foo(int a) {
-        a = 0;
-        return 42. / a;
-    }
+```c++
+#include <iostream>
+
+int main() {
+    std::cout << "Hello World!";
+    return 0;
+}
+
+float foo(int a) {
+    a = 0;
+    return 42. / a;
+}
+```
 
 **Разработка через тестирование** (англ. - Test-driven development) - подход, при котором мы сначала пишем тесты, а только потом разрабатываем саму функциональность. На практике это не всегда достижимо и не всегда удобно, поэтому в написании тестов после разработки функциональности нет ничего плохого. 
 
 **Юнит-тестирование** (англ. - Unit Testing) - разбиение программы на мелкие блоки, каждый из которых может быть протестирован отдельно. Пример ниже содержит простой класс, который умеет только добавлять 10 и умножать на 10. Мы можем подумать над тестами заранее (**Разработка через тестирование**) или написать тесты потом, в любом случае, нам нужно добиться прохождения тестов. На практике вы будете использовать библиотеки типа `unittest`, пример ниже специально написан без использования сторонних библиотек, чтобы показать концепцию тестирования и не отвлекаться на изучение конкретных инструментов. Позже в курсе тестированию будут посвящены отдельные занятия.
 
+```python
 class Calculator:
     
     def add_10(a):
@@ -206,6 +211,7 @@ if __name__ == "__main__":
         print("Fail test 4")
     except:
         print("Pass test 4")
+```
 
 *Подумайте, почему четвертый тест не прошел и как сделать так, чтобы он отработал. Оцените, насколько удобно иметь тесты*
 
@@ -227,34 +233,37 @@ if __name__ == "__main__":
 
 Ошибка или непонятное поведение программы, в общем, всё, что нельзя отнести к нормальному поведению программы. Часто используется прямое произношение с английского **баг**. Баг может вызвать ошибку при использовании определенного места в программе и это хороший сценарий, поскольку сразу понятно где происходит ошибка. *В примере ниже в print_value() идет обращение к переменной, которую ранее нигде не инициализировали, это можно исправить написав `self.value` вместо `value`*
 
-    class ClassWithBugFailFast:
+```python
+class ClassWithBugFailFast:
 
-        def print_value(self):
-            print(value)
+    def print_value(self):
+        print(value)
 
-        def set_value(self, value):
-            self.value = value
+    def set_value(self, value):
+        self.value = value
 
-    if __name__ == "__main__":
-        cls = ClassWithBugFailFast()
-        cls.set_value(123)
-        cls.print_value()
-
+if __name__ == "__main__":
+    cls = ClassWithBugFailFast()
+    cls.set_value(123)
+    cls.print_value()
+```
 
 Часто бывает, что ошибки не происходит, но поведение программы не очевидно.
 
-    class ClassWithBugNoFail:
+```python
+class ClassWithBugNoFail:
 
-        def print_value(self, value):
-            print(self.value)
+    def print_value(self, value):
+        print(self.value)
 
-        def set_value(self, value):
-            self.value = value
+    def set_value(self, value):
+        self.value = value
 
-    if __name__ == "__main__":
-        cls = ClassWithBugNoFail()
-        cls.set_value(123)
-        cls.print_value(456)
+if __name__ == "__main__":
+    cls = ClassWithBugNoFail()
+    cls.set_value(123)
+    cls.print_value(456)
+```
 
 ### Задачи/Проблемы (англ. - Issues)
 
@@ -262,37 +271,34 @@ if __name__ == "__main__":
 
 ### Fail-fast
 
-В примере выше мы посмотрели, что неправильно написанный код, который сразу приводит к ошибке лучше, чем код, который не приводит к ошибке, но приводит к непонятным результатам. Понятно, что мы не планируем писать баги, но поведение, при котором мы вызываем ошибку (кидаем исключение) при непонятной ситуации, получило название **fail-fast**. Подход **fail fast** является предпочтительным при написании кода, так как позволяет определить место, где произошла ошибка. Другим подходом при обработке непредвиденной ситуации является подход **forgive**, при котором мы пытаемся уменьшить негативные последствия и стараемся не кидать ошибки. Подробнее про два подхода можно почитать в [статье](https://habr.com/ru/post/218325/)
+В примере выше мы посмотрели, что неправильно написанный код, который сразу приводит к ошибке лучше, чем код, который не приводит к ошибке, но приводит к непонятным результатам. Понятно, что мы не планируем писать баги, но поведение, при котором мы вызываем ошибку (кидаем исключение) при непонятной ситуации, получило название **fail-fast**. Подход **fail-fast** является предпочтительным при написании кода, так как позволяет определить место, где произошла ошибка. Другим подходом при обработке непредвиденной ситуации является подход **forgive**, при котором мы пытаемся уменьшить негативные последствия и стараемся не кидать ошибки. Подробнее про два подхода можно почитать в [статье](https://habr.com/ru/post/218325/)
 
 ### Исключение (англ. - Exceptions)
 
 Исключительная ситуация требует исключительных мер. При работе приложения мы стараемся предусмотреть возможные варианты его использования, например, варианты входных данных, которые приходят в приложение от пользователя. Мы можем попробовать исправить это. Например, конвертировать строку, содержащую число к целому числу, используя `int()`, а если не получится, то `float()`. *Для данного примера считаем, что это приемлемый вариант*. 
 
-    class Validator:
-        
-        def get_int_number(string):
-            result = 0
-            try:
-                result = int(string)
-            except ValueError:
-                print('Could convert to int, try via float:')
-                result = int(float(string))
-            return result
-            
-    if __name__ == "__main__":
-        print(Validator.get_int_number('10.'))
+```python
+class Validator:
+    
+    def get_int_number(string):
+        result = 0
         try:
-            user_input = 'aaa'
-            Validator.get_int_number(user_input)
+            result = int(string)
         except ValueError:
-            print(f'{user_input} is not a number, please enter proper data')
-        except Exception as e:
-            print(f'Unknow error ask developers {e}')
+            print('Could convert to int, try via float:')
+            result = int(float(string))
+        return result
+        
+if __name__ == "__main__":
+    print(Validator.get_int_number('10.'))
+    try:
+        user_input = 'aaa'
+        Validator.get_int_number(user_input)
+    except ValueError:
+        print(f'{user_input} is not a number, please enter proper data')
+    except Exception as e:
+        print(f'Unknow error ask developers {e}')
+```
 
 Если не получается конвертировать в число в принципе, как в случае со строкой `'aaa'`, мы можем попросить пользователя повторить ввод. Если же в происходит что-то, что мы не можем идентифицировать, то тоже должны «поймать» это на верхнем уровне, в примере выше это `except Exception as e`, и зафиксировать, можно, например, записать сообщение об ошибке в лог.
-
-
-
-
-
 

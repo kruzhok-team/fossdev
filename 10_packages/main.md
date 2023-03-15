@@ -9,8 +9,8 @@ lib_name.do_something()
 
 Мы уже умеем устанавливать пакет в связке pip+git(PASTE_LINK). Мы являемся пользователем функции `do_something()` из библиотеки `lib_name`. Как же нам получить do_somethig() там, где мы пишем код, и воспользоваться ей? Рассмотрим варианты, которыми на самом деле пользуются люди, и потом рассмотрим, как сделать это правильно.
 
-
 ## Ctrl-C/Ctrl-V
+
 Первый наивный способ - это просто скопировать функцию себе и вызвать там, где нужно (не делайте так).
 
 Почему это плохо:
@@ -21,6 +21,7 @@ lib_name.do_something()
 * нет возможность запустить тесты. Как правило, в библиотеках содержатся тесты, которые можно запустить и проверить, все ли корректно работает именно на этой машине. Просто копируя функцию, мы не подтягиваем автоматически тесты.
 
 ## Клонируем и указываем путь через sys
+
 Мы можем сделать клон репозитория:
 
 ```bash
@@ -165,19 +166,18 @@ pipenv install
 После этого появятся два новых файла (проверьте через `git status`) `Pipfile` и `Pipfile.lock`. Содержимое `Pipfile` без дополнительных зависимостей выглядит так:
 
 ```bash
-cat Pipfile
-
-[[source]]
-url = "https://pypi.org/simple"
-verify_ssl = true
-name = "pypi"
-
-[packages]
-
-[dev-packages]
-
-[requires]
-python_version = "3.10"
+artem@pc:~$ cat Pipfile
+    [[source]]
+    url = "https://pypi.org/simple"
+    verify_ssl = true
+    name = "pypi"
+    
+    [packages]
+    
+    [dev-packages]
+    
+    [requires]
+    python_version = "3.10"
 ```
 
 Пустой `Pipfile.lock` содержит примерно ту же информацию. Теперь активируем виртуальное окружение и выполним установку `matplotlib`:
@@ -190,19 +190,19 @@ pipenv install matplotlib
 И еще раз взглянем на `Pipfile`:
 
 ```bash
-cat Pipfile
-[[source]]
-url = "https://pypi.org/simple"
-verify_ssl = true
-name = "pypi"
-
-[packages]
-matplotlib = "*"
-
-[dev-packages]
-
-[requires]
-python_version = "3.10"
+artem@pc:~$ cat Pipfile
+    [[source]]
+    url = "https://pypi.org/simple"
+    verify_ssl = true
+    name = "pypi"
+    
+    [packages]
+    matplotlib = "*"
+    
+    [dev-packages]
+    
+    [requires]
+    python_version = "3.10"
 ```
 
 Содержимое `Pipfile.lock` теперь выглядит громоздко, но мы также видим, что там теперь есть информация `matplotlib`, выполнив `cat Pipfile.lock`. Содержится вся необходимая по зависимостям и их версиям.
@@ -235,15 +235,15 @@ def read_dependencies(fname):
 
 ```bash
 (base) artem@pc:~/tmp$ cat sample.py 
-if foo == 'blah': do_blah_thing()
-do_one(); do_two(); do_three()
+    if foo == 'blah': do_blah_thing()
+    do_one(); do_two(); do_three()
 (base) artem@pc:~/tmp$ autopep8 ./sample.py 
-if foo == 'blah':
-    do_blah_thing()
-do_one()
-do_two()
-do_three()
-
+    if foo == 'blah':
+        do_blah_thing()
+    do_one()
+    do_two()
+    do_three()
+    
 ```
 
 Не все, что написано в PEP8, может быть поправлено автоматически, например `autopep8` не поправит неинформативные комментарии. 
@@ -313,12 +313,12 @@ clean:
 Указав `test: dev`, мы сделали опцию `test` зависимой от опции `dev`, и поэтому выполнится сначала она, а затем уже `test`. 
 
 ```bash 
-pipenv shell 
-make test
-pip install -e .
+artem@pc:~$ pipenv shell 
+artem@pc:~$ make test
+artem@pc:~$ pip install -e .
 
 
-pytest --doctest-modules --junitxml=junit/test-results.xml
+(base) artem@pc:~$ pytest --doctest-modules --junitxml=junit/test-results.xml
 ============================== test session starts ===============================
 platform linux -- Python 3.10.9, pytest-7.2.1, pluggy-1.0.0
 rootdir: /home/artem/swdev/gitrepo/edu/toolchain_proj/mtracker
@@ -334,15 +334,15 @@ test/test_mtracker.py .                                                    [100%
 Мы видим, что тесты походят, и мы готовы собрать наш проект. Сделаем для начала очистку и посмотрим, какие файл добавились при сборке.
 
 ```bash
-make clean
-ls
+artem@pc:~$ make clean
+artem@pc:~$ ls
     LICENSE   mtracker  Pipfile.lock  requirements.txt  test
     Makefile  Pipfile   README.md     setup.py
-make build 
-ls
+artem@pc:~$ make build 
+artem@pc:~$ ls
     build  LICENSE   mtracker           Pipfile       README.md         setup.py
     dist   Makefile  mtracker.egg-info  Pipfile.lock  requirements.txt  test
-ls dist
+artem@pc:~$ ls dist
     mtracker-1.0-py3-none-any.whl
 ```
 У нас появилось несколько новых каталогов. И наш собранный пакет расположен в `dist`. Проверим, что mtracker не установлен в нашем окружении, команда ниже ничего не должна вывести.
@@ -353,8 +353,8 @@ pip list | grep mtracker
 И устанавливаем собранный пакет `mtracker-1.0-py3-none-any.whl`:
 
 ```bash
-pip install ./dist/*.whl
-pip list | grep mtracker
+artem@pc:~$ pip install ./dist/*.whl
+artem@pc:~$ pip list | grep mtracker
     mtracker         1.0
 ```
 

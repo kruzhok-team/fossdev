@@ -2,7 +2,7 @@
 
 ## Зачем нужно логирование
 
-Что значит логирование? Логирование (или еще назвают журналом событий) является важным инструментом при разработке приложений разработки программного обеспечения. При использовании логирования мы можем не гадать, что именно произошло в нашем приложении, а опереться на конкретную информацию. При этом нужно помнить, что переизбыток информации так же, вреден как и ее недостаток: в куче разнородных сообщений, часть из которых является бесполезными, а часть избыточными, ошибку найти еще можно, и а вот причины, которые к ней привели, уже гораздо сложнее. Речь идет о записи специального текстового файла (лога) со специально структурированной информацией о работе программы. Каждое сообщение может сопровождаться метками, самая простая из которых - метка времени, для удобного поиска и группировки. 
+Что значит логирование? Логирование (или еще называют журналом событий) является важным инструментом при разработке приложений разработки программного обеспечения. При использовании логирования мы можем не гадать, что именно произошло в нашем приложении, а опереться на конкретную информацию. При этом нужно помнить, что переизбыток информации так же, вреден как и ее недостаток: в куче разнородных сообщений, часть из которых является бесполезными, а часть избыточными, ошибку найти еще можно, и а вот причины, которые к ней привели, уже гораздо сложнее. Речь идет о записи специального текстового файла (лога) со специально структурированной информацией о работе программы. Каждое сообщение может сопровождаться метками, самая простая из которых - метка времени, для удобного поиска и группировки. 
 
 Инструменты для логирование можно рассматривать как отдельную систему при разработке ПО, при этом она не менее важна чем, например, система контроля версий. При этом системами контроля версий принято пользоваться почти всегда, а системе логирования не уделяется достаточного внимания, так как ее поддержка в коде приложение (все это дополнительные строчки кода) не несет дополнительного функционала, если все идет по плану. Однако логи очень полезны. Если все пошло не так как должно и если их нет, единственный способ найти ошибку - работать с пользователем и воспроизводить проблему.
 
@@ -17,7 +17,9 @@
 
 Посмотреть когда-либо отправленные системой сообщения об ошибках на Ubuntu можно, выполнив команду в терминале:
 
+```bash 
 xdg-open https://errors.ubuntu.com/user/`sudo cat /var/lib/whoopsie/whoopsie-id`
+```
 
 2. **Мониторинг**
 Этот сценарий предполагает использование логов для выявления процессов, которые не связаны с ошибками, но могут означать другую проблему. Например, если нагрузка на сервер (число одновременных подключений) выросла в 10 раз за короткий промежуток времени. Возможно, происходит какая-то атака. Так логи могут использоваться для мониторинга работоспособности, а также для выявления потенциальных проблем. Логи также можно использовать для отслеживания состояния важных процессов, например, миграции базы данных или обновления системы.
@@ -63,43 +65,44 @@ xdg-open https://errors.ubuntu.com/user/`sudo cat /var/lib/whoopsie/whoopsie-id`
 
 Существует несколько популярных библиотек ведения журнала для Python:
 
-## [**logging**](https://docs.python.org/3/library/logging.html)
+### [**logging**](https://docs.python.org/3/library/logging.html)
    Встроенный модуль ведения журнала в стандартной библиотеке Python - это гибкая и мощная библиотека ведения логов, которая предоставляет множество функциональных возможностей «из коробки».
+
 ```python
-    import logging
-    import sys
-    import time
-    from logging.handlers import TimedRotatingFileHandler
+import logging
+import sys
+import time
+from logging.handlers import TimedRotatingFileHandler
+
+FORMATTER_STRING = "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
+FORMATTER = logging.Formatter(FORMATTER_STRING)
+LOG_FILE = "/tmp/my_app.log" # use fancy libs to make proper temp file
+
+def get_logger(logger_name):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)
     
-    FORMATTER_STRING = "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
-    FORMATTER = logging.Formatter(FORMATTER_STRING)
-    LOG_FILE = "/tmp/my_app.log" # use fancy libs to make proper temp file
-    
-    def get_logger(logger_name):
-        logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.INFO)
-        
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(FORMATTER)
-        logger.addHandler(console_handler)
-    
-        file_handler = TimedRotatingFileHandler(LOG_FILE, when='midnight')
-        #file_handler.setFormatter(FORMATTER)
-        logger.addHandler(file_handler)
-    
-        return logger
-    
-    if __name__ == "__main__":
-        logger = get_logger("my_app_logger")
-        logger.info("Start logging")
-        logger.debug("Some debug message")
-        while True:
-            try: 
-                time.sleep(1)
-                logger.info("Keep logging")
-            except KeyboardInterrupt:
-                logger.fatal("User get bored")
-                break
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(FORMATTER)
+    logger.addHandler(console_handler)
+
+    file_handler = TimedRotatingFileHandler(LOG_FILE, when='midnight')
+    #file_handler.setFormatter(FORMATTER)
+    logger.addHandler(file_handler)
+
+    return logger
+
+if __name__ == "__main__":
+    logger = get_logger("my_app_logger")
+    logger.info("Start logging")
+    logger.debug("Some debug message")
+    while True:
+        try: 
+            time.sleep(1)
+            logger.info("Keep logging")
+        except KeyboardInterrupt:
+            logger.fatal("User get bored")
+            break
 ```               
 
 Давайте поймем, что здесь происходит. Мы создаем логгер и выводим логи на уровне INFO в файл и в терминал. В файле логи записываются без форматирования. Выводим сообщение о критической ошибке, когда пользователь нажмет Ctrl-C и прервет выполнение программы. Обратите внимание, что сообщения уровня DEBUG не выводятся, так как мы установили уровень для выводе не ниже INFO `logger.setLevel(logging.INFO)`. Ниже описаны объекты, которые мы используем в коде:
@@ -117,67 +120,70 @@ xdg-open https://errors.ubuntu.com/user/`sudo cat /var/lib/whoopsie/whoopsie-id`
   * logger.info() - используем для вывода логов на уровне INFO. Другие уровни имеют соответствующие функции для вывода.
 
 Запустим приложение и увидим вывод:
+
 ```sh
-    artem@pc:~$ python ./logging_sample.py
+artem@pc:~$ python ./logging_sample.py
     2023-02-14 10:05:40,074 — my_app_logger — INFO — Start logging
     2023-02-14 10:05:41,075 — my_app_logger — INFO — Keep logging
     2023-02-14 10:05:42,076 — my_app_logger — INFO — Keep logging
     ^C2023-02-14 10:05:42,392 — my_app_logger — CRITICAL — User get bored
 ```
+
 В файле мы видим те же самые сообщения, но не снабженные никакой дополнительной информацией: 
+
 ```sh
-    artem@pc:~$ cat /tmp/my_app.log
+artem@pc:~$ cat /tmp/my_app.log
     Start logging
     Keep logging
     Keep logging
     User get bored
 ```   
 
-## [**structlog**](https://www.structlog.org/en/stable/)
+### [**structlog**](https://www.structlog.org/en/stable/)
    Это библиотека расширяет встроенный модуль Python для ведения логов с дополнительными функциями, такими как возможность прикреплять дополнительные данные к сообщениям или манипулировать сообщениями до их отправки.
 
 Рассмотрим слегка модифицированный пример с сайта `structlog`:
 ```python
-    import logging
-    import sys
-    import structlog
-    
-    FORMATTER_STRING = "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
-    FORMATTER = logging.Formatter(FORMATTER_STRING)
-    
-    def get_logger(logger_name):
-        logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.INFO)    
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(FORMATTER)
-        logger.addHandler(console_handler)
-        return logger
-    
-    def replace_user(_, __, event_dict):
-        user = event_dict.get("user")
-        if user:
-            # we can access data base here for user_token
-            # for now keep it fake
-            user_token = "some_string_that_we_can_learn_username_from"
-            event_dict["user"] = user_token
-        return event_dict
-    
-    def censor_password(_, __, event_dict):
-        pw = event_dict.get("password")
-        if pw:
-            event_dict["password"] = "*CENSORED*"
-        return event_dict
-    
-    log = structlog.wrap_logger(
-        get_logger("my_app_logger"),
-        processors=[
-            censor_password,
-            replace_user,
-            structlog.processors.JSONRenderer(indent=1, sort_keys=True),
-        ],
-    )
-    log.warning("something", password="secret")
-    log.warning("something", user="Ivan")
+import logging
+import sys
+import structlog
+
+FORMATTER_STRING = "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
+FORMATTER = logging.Formatter(FORMATTER_STRING)
+
+def get_logger(logger_name):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)    
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(FORMATTER)
+    logger.addHandler(console_handler)
+    return logger
+
+def replace_user(_, __, event_dict):
+    user = event_dict.get("user")
+    if user:
+        # we can access data base here for user_token
+        # for now keep it fake
+        user_token = "some_string_that_we_can_learn_username_from"
+        event_dict["user"] = user_token
+    return event_dict
+
+def censor_password(_, __, event_dict):
+    pw = event_dict.get("password")
+    if pw:
+        event_dict["password"] = "*CENSORED*"
+    return event_dict
+
+log = structlog.wrap_logger(
+    get_logger("my_app_logger"),
+    processors=[
+        censor_password,
+        replace_user,
+        structlog.processors.JSONRenderer(indent=1, sort_keys=True),
+    ],
+)
+log.warning("something", password="secret")
+log.warning("something", user="Ivan")
 ```    
 
 Здесь мы используем `get_logger()` как раньше. Убрали вывод в файл, так как он не важен для демонстрации. Сделали обертку для логгера и определили, что должно происходить с данными, если они передаются для логирования. Мы видим, что здесь нам необязательно определять строку форматирования для всех данных, данные передаются по ключам и это дает нам возможность получить читаемый вывод и сделать что-нибудь со значениями до вывода. В примере ниже мы хотим заменить имена на что-то, что позволит нам восстановить эти имена, например если мы держим соответствие имен и некоторых токенов (если требования к личным данным не позволяют нам публиковать имена людей). Пароли мы хотим скрыть полностью. Для манипуляции с данными в логгер от `structlog` мы можем определить несколько *обработчиков (processors)*, в которых описано то, что мы хотим сделать. 
@@ -186,45 +192,47 @@ xdg-open https://errors.ubuntu.com/user/`sudo cat /var/lib/whoopsie/whoopsie-id`
   * replace_user - функция-обработчик, которая заменит имя пользователя 
 
 ```sh
-    2023-02-14 10:53:42,214 — my_app_logger — WARNING — {
-     "event": "something",
-     "password": "*CENSORED*"
-    }
-    2023-02-14 10:53:42,214 — my_app_logger — WARNING — {
-     "event": "something",
-     "user": "some_string_that_we_can_learn_username_from"
-    }
+2023-02-14 10:53:42,214 — my_app_logger — WARNING — {
+ "event": "something",
+ "password": "*CENSORED*"
+}
+2023-02-14 10:53:42,214 — my_app_logger — WARNING — {
+ "event": "something",
+ "user": "some_string_that_we_can_learn_username_from"
+}
 ```    
 
-## [**loguru**](https://github.com/Delgan/loguru)
+### [**loguru**](https://github.com/Delgan/loguru)
 
 Эта библиотека сделает ваш журнал более простым в использовании. Loguru предоставляет простой и интуитивно понятный интерфейс для протоколирования сообщений и поддерживает расширенные функции, такие как фильтрация журналов, цветной вывод и обработка исключений. 
 
-Пример из [статьи](https://medium.com/analytics-vidhya/a-quick-guide-to-using-loguru-4042dc5437a5) позволяет понять возможность `loguru`
+Пример из [статьи](https://medium.com/analytics-vidhya/a-quick-guide-to-using-loguru-4042dc5437a5) позволяет понять возможность `loguru`:
+
 ```python
-    import sys
-    from loguru import logger
+import sys
+from loguru import logger
+
+logger.remove(0)
+logger.add(sys.stderr, backtrace=True, diagnose=True)
+
+def func(a, b):
+  return (a / b) + func(a, b-1)
     
-    logger.remove(0)
-    logger.add(sys.stderr, backtrace=True, diagnose=True)
-    
-    def func(a, b):
-      return (a / b) + func(a, b-1)
-        
-    def nested(c):
-        try:
-            func(5, c)
-        except ZeroDivisionError:
-            logger.exception("Division by zero error!")
-    
-    nested(1)
+def nested(c):
+    try:
+        func(5, c)
+    except ZeroDivisionError:
+        logger.exception("Division by zero error!")
+
+nested(1)
 ```
+
 При запуске мы получим такой вывод:
 
 ![loguru_output](./img/loguru_output.png)
  
 
-## [**logbook**](https://logbook.readthedocs.io/en/stable/)
+### [**logbook**](https://logbook.readthedocs.io/en/stable/)
 
 Это библиотека ведения логов, которая разработана таким образом, чтобы быть быстрой и эффективной, и предоставляет такие функции, как ведение логов с учетом контекста, гибкое форматирование журнала и поддержка различных уровней ведения журнала.
 
