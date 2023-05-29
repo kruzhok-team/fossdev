@@ -13,6 +13,7 @@ Welcome to toolchain's documentation!
   00_terms/main.md
   01_open_source/main.md
   02_open_license/main.md
+  03_stages/main.md
   04_mvp/main.md
   05_git_base/main.md
   06_github/main.md
@@ -27,14 +28,7 @@ Welcome to toolchain's documentation!
   23_testing/main.md
   24_logging/main.md
   25_docker_base/main.md
-  31_docker_project/main.md
   32_docker_network/main.md
   33_dockerhub/main.md
   36_github_pages/main.md
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+  
