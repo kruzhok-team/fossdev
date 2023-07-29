@@ -7,7 +7,7 @@ import lib_name
 lib_name.do_something()
 ```
 
-Мы уже умеем устанавливать пакет в связке pip+git(PASTE_LINK). Мы являемся пользователем функции `do_something()` из библиотеки `lib_name`. Как же нам получить do_somethig() там, где мы пишем код, и воспользоваться ей? Рассмотрим варианты, которыми на самом деле пользуются люди, и потом рассмотрим, как сделать это правильно.
+Мы являемся пользователем функции `do_something()` из библиотеки `lib_name`. Как же нам получить do_somethig() там, где мы пишем код, и воспользоваться ей? Рассмотрим сначала простые, но неправильные способы, и потом рассмотрим, как сделать это правильно.
 
 ## Ctrl-C/Ctrl-V
 
@@ -75,7 +75,7 @@ pip install lib_name
 
 Проговорим еще раз, что существует такой способ. Если вы пропустили предыдущий урок, вернитесь и посмотрите, что должно содержаться в проекте для того, чтобы другие разработчики могли им воспользоваться. Не для всех языков программирования есть аналог `pip`, а понимание того, что в репозитории может содержаться вся необходимая информация для того, чтобы установить/собрать библиотеку, поможет легче найти решение проблемы установки для других языков.
 
-## Немного про pip
+### Немного про pip
 
 Для инфраструктуры `python` менеджер пакетов `pip` является стандартом де факто, хотя появился с текущим именем не так [давно](https://ianbicking.org/blog/2008/10/pyinstall-is-dead-long-live-pip.html). Концепция менеджеров пакетов удобна для программиста, поэтому некоторые языки программирования и фреймворки реализуют её для управления зависимостями: 
 
@@ -104,7 +104,7 @@ pip install lib_name
 Третье: менеджер проектов дает возможность прогнать тесты при установке так, чтобы мы были уверены, что сделали все возможное, чтобы получить работающую библиотеку. При этом никто не гарантирует, что тесты полностью покрывают все возможные ситуации, но часть из них точно, и всегда неплохая идея проверить хотя бы их.
 
 
-## Делаем свою библиотеку пакетом. `pip`
+## Делаем сборку библиотеки для публикации. `pip`
 
 Когда нам нужна функциональность какой-либо библиотеки в Python, скорее всего, мы ставим ее через pip:
 
@@ -142,7 +142,7 @@ python setup.py bdist_wheel
 
 Помня о том что `bdist` является предпочтительным для распространения своего пакета, **sdist** также публикуется так как такое распространение позволяет  собирать проект под системы, для которых не предоставлен **bdist**.
 
-### Публикуем свой проект в PyPI
+### Настраиваем окружение
 
 Возьмем проект [mtracker](https://github.com/standlab/mtracker) с предыдущего занятия. Переключимся на ветку `pypi_ready`, чтобы не ломать основной код (и, конечно, еще раз потренируемся с `git`):
 
@@ -152,7 +152,7 @@ git clone https://github.com/standlab/mtracker.git
 git checkout -b pypi_ready
 ```
 
-Добавим несколько нововведений. Ранее мы не использовали никаких дополнительных библиотек, `install_requires=[]`. Сейчас мы хотим добавить библиотеку `matplotlib` в зависимости к проекту. Мы будем использовать виртуальное окружение с помощью `pipenv` (подробнее о виртуальных окружения есть отдельный урок). *Настраивать виртуальное окружение всегда полезно, так как это изолируют все специфичные зависимости. У нас на практике был случай, когда установка библиотеки напрочь сломала среду разработки Spyder (стандартная среда поставки Anaconda)*.
+Добавим несколько нововведений. Ранее мы не использовали никаких дополнительных библиотек, `install_requires=[]`. Сейчас мы хотим добавить библиотеку `matplotlib` в зависимости к проекту. Мы будем использовать виртуальное окружение с помощью `pipenv` (подробнее о виртуальных окружения есть отдельный урок). `pipenv` [комбинирует](https://pythonhow.com/what/what-is-the-difference-between-venv-pyvenv-pyenv-virtualenv-virtualenvwrapper-pipenv/) функциональность виртуального окружения, которое можно получить с помощью `venv` или `virtualenv` c менеджером пакетов `pip`. *Настраивать виртуальное окружение всегда полезно, так как это изолируют все специфичные зависимости. У нас на практике был случай, когда установка библиотеки напрочь сломала среду разработки Spyder (стандартная среда поставки Anaconda)*.
 
 ```bash
 sudo apt install pipenv
@@ -287,25 +287,25 @@ pipenv install -d pytest
 
 Остальные аспекты пока оставим для дальнейших занятий.
 
-Теперь мы готовы написать Make файл для сборки своего пакета. 
+Теперь мы готовы написать Make файл для сборки своего пакета. Мы использовали `pipenv shell` чтобы активировать окружение и работать в нем, в makefile мы пропишем явно что команды выполняются в нашем окружении т.е. вместо `pytest` мы напишем `pipenv run pytest` и так далее. В `makefile` мы определяем так называемые `target` (задачи), которые будут выполняться кода мы напишем `make SPECIFY_TARGET`, например для активации окружения и установки зависимостей, мы определяем задачу `dev` и когда мы выполним `make dev`, то выполниться все что относиться к ней, в нашем случае `pipenv install --dev`. Что бы определить зависимость от другой задачи, которая должна выполниться заранее, мы указываем ее имя после двоеточия.
 
-```bash
+```makefile
 help:
 	@echo "Make project with following instructions"
 	@cat Makefile
 
 dev:
-	pip install -e .
+	pipenv install --dev
 
 test: dev
-	pytest --doctest-modules --junitxml=junit/test-results.xml
+	pipenv run pytest --doctest-modules --junitxml=junit/test-results.xml
 
 build: clean
-	pip install wheel
-	python setup.py bdist_wheel
+	pipenv install wheel
+	pipenv run python setup.py sdist bdist_wheel
 
 clean:
-	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ dist/
+	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ dist/ 
 	@find . -not -path './.venv*' -path '*/__pycache__*' -delete
 	@find . -not -path './.venv*' -path '*/*.egg-info*' -delete
 ```
@@ -358,5 +358,109 @@ artem@pc:~$ pip list | grep mtracker
     mtracker         1.0
 ```
 
+## Публикация в PyPI
 
+Теперь когда у нас есть библиотека в собранном виде мы можем опубликовать ее в PyPI. Что бы не засорять [основной индекс](https://pypi.org/) можно публиковать в [тестовом](https://test.pypi.org/). Для публикации своей библиотеки мы будем использовать утилиту `twine`
+
+```bash
+pip install twine
+```
+
+У нас уже есть все для публикации так как мы уже настроили сборку проекта и у нас есть как `bdist` так и `sdist`. Зарегистрируйтесь в [тестовом](https://test.pypi.org/) индексе пакетов и выполните две команды, после чего вам будет предложено ввести логин и пароль, **не забудьте так же проверить что имя библиотеки не занято**.
+
+```bash
+twine check dist/*
+twine upload -r testpypi dist/*
+```
+
+После этого вы и кто угодно можете установить библиотеку:
+
+```bash
+python -m pip install -i https://test.pypi.org/simple mtracker
+```
+
+Параметр `-i https://test.pypi.org/simple` нужен только при использовании тестового индекса пакетов.
+
+## Задачи
+
+### Задача 1
+
+Добавьте в makefile задачи для автоматического форматирования кода по `pep8`, а так же для публикации проекта в PyPI. Добавьте информационное сообщение для каждой задачи в `makefile`.
+
+**Ответ**
+
+```
+PACKAGE_NAME := mtracker
+PYTHON := pipenv run python
+
+.PHONY: install test clean package docs publish format build
+
+install:
+	@echo "Setting up pipenv virtual environment..."
+	pipenv install --dev
+
+test:
+	@echo "Running tests..."
+	pipenv run pytest
+
+clean:
+	@echo "Cleaning up..."
+	rm -rf dist/ build/ *.egg-info
+
+package:
+	@echo "Packaging the library..."
+	$(PYTHON) setup.py sdist bdist_wheel
+
+docs:
+	@echo "Generating documentation..."
+	pipenv run pdoc --html $(PACKAGE_NAME) --output-dir docs --force
+
+publish: package
+	@echo "Publishing the package to PyPI..."
+	pipenv run twine upload dist/*
+
+format:
+	@echo "Formatting code with autopep8..."
+	pipenv run autopep8 --in-place --recursive mtracker tests
+
+```
+
+### Задача 2
+
+Прямой вызов `setup.py` считается не самым надежным на сегодня способом. Мы написали урок с его использованием для того, чтобы показать явно все шаги. Прочитайте [статью](https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html) и замените вызов `python setup.py` на `python -m build`. 
+
+**Ответ**
+
+PACKAGE_NAME := mtracker
+PYTHON := pipenv run python
+
+.PHONY: install test clean package docs publish format build
+
+install:
+	@echo "Setting up pipenv virtual environment..."
+	pipenv install --dev
+
+test:
+	@echo "Running tests..."
+	pipenv run pytest
+
+clean:
+	@echo "Cleaning up..."
+	rm -rf dist/ build/ *.egg-info
+
+package:
+	@echo "Packaging the library..."
+	$(PYTHON) -m build
+
+docs:
+	@echo "Generating documentation..."
+	pipenv run pdoc --html $(PACKAGE_NAME) --output-dir docs --force
+
+publish: package
+	@echo "Publishing the package to PyPI..."
+	pipenv run twine upload dist/*
+
+format:
+	@echo "Formatting code with autopep8..."
+	pipenv run autopep8 --in-place --recursive mtracker tests
 
