@@ -20,7 +20,9 @@
   - [Стадии жизни проекта](/educational_materials/stages/content.md)
   - Работа над MVP. Этапы разработки и проверка гипотез
   - UML диаграммы
-  - Код -> Библиотека
+  - [Код -> Библиотека](/educational_materials/code_to_lib/content.md)
+    - [Задачи](/educational_materials/code_to_lib/exercises.md)
+    - [Вопросы](/educational_materials/code_to_lib/quiz.md)
   - Основы опенсорс
   - Обзор открытых лицензий и типов проектов для которых они подходят.
   - Создаем свой первый статичный сайт на GitHub Pages
