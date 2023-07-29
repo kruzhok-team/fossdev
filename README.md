@@ -3,7 +3,7 @@
 ## Оглавление
 
 * Раздел 1. Введение, подходы к программированию
-  - Терминология 
+  - [Терминология](/educational_materials/terms/content.md)
   - [Командная строка как универсальный способ взаимодействия с любым компьютером](/educational_materials/bash/content.md)
     - [Вопросы](/educational_materials/bash/quiz.md)
     - [Задачи](/educational_materials/bash/exercises.md)
