@@ -15,7 +15,7 @@
   - [Оформление кода. Виды стилей. Автоматические средства для форматирование](/educational_materials/styles/content.md)
     - [Задачи](/educational_materials/styles/exercises.md)
     - [Вопросы](/educational_materials/styles/quiz.md)
-  - Зачем нужно документирование. Учимся читать и использовать в своем проекте чужой код с Github
+  - [Зачем нужно документирование. Учимся читать и использовать в своем проекте чужой код с Github](/educational_materials/github/content.md)
 * Раздел 2. Работа над проектом
   - [Стадии жизни проекта](/educational_materials/stages/content.md)
   - Работа над MVP. Этапы разработки и проверка гипотез
