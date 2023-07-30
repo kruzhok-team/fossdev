@@ -27,6 +27,8 @@
   - Создаем свой первый статичный сайт на GitHub Pages
 * Раздел 3. Инструменты
   - [Знакомство с рабочим окружением. Системное окружение. Создание виртуального окружения venv для проекта](/educational_materials/path_venv/content.md)
+    - [Задачи](/educational_materials/path_venv/exercises.md)
+    - [Вопросы](/educational_materials/path_venv/quiz.md)
   - [Стандарты составления документации к коду и приложению](/educational_materials/docs/content.md)
     - [Задачи](/educational_materials/docs/exercises.md)
     - [Вопросы](/educational_materials/docs/quiz.md)
