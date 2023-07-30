@@ -36,7 +36,9 @@
   - [Логирование работы приложения](/educational_materials/logging/content.md)
     - [Задачи](/educational_materials/logging/exercises.md)
     - [Вопросы](/educational_materials/logging/quiz.md)
-  - Менеджеры пакетов Python. Сборка проекта
+  - [Менеджеры пакетов Python. Сборка проекта](/educational_materials/packaging/content.md)
+    - [Задачи](/educational_materials/packaging/exercises.md)
+    - [Вопросы](/educational_materials/packaging/quiz.md)
   - Docker. Концепция сети в Docker
 
 
