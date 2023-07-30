@@ -29,8 +29,10 @@
 * Раздел 3. Инструменты
   - [Стандарты составления документации к коду и приложению](/educational_materials/docs/content.md)
     - [Задачи](/educational_materials/docs/exercises.md)
-    - [Вопросы](/educational_materials/docs/quiz.md
-  - Автотесты и культура разработки кода test-driven-development
+    - [Вопросы](/educational_materials/docs/quiz.md)
+  - [Автотесты и культура разработки кода test-driven-development](/educational_materials/testing/content.md)
+    - [Задачи](/educational_materials/testing/exercises.md)
+    - [Вопросы](/educational_materials/testing/quiz.md)
   - Логирование работы приложения
   - Менеджеры пакетов Python. Сборка проекта
   - Docker. Концепция сети в Docker
