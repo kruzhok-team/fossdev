@@ -24,7 +24,7 @@
   - [Код -> Библиотека](/educational_materials/code_to_lib/content.md)
     - [Задачи](/educational_materials/code_to_lib/exercises.md)
     - [Вопросы](/educational_materials/code_to_lib/quiz.md)
-  - Основы опенсорс
+  - [Основы Open Source](/educational_materials/open_source/content.md)
   - Обзор открытых лицензий и типов проектов для которых они подходят.
   - Создаем свой первый статичный сайт на GitHub Pages
 * Раздел 3. Инструменты
