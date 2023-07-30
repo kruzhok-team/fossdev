@@ -48,7 +48,12 @@
   - [Управление вызовом приложений - автоматизация процессов, посредством планировщика задач crontab и systemctl](/educational_materials/managers/content.md)
     - [Задачи](/educational_materials/managers/exercises.md)
     - [Вопросы](/educational_materials/managers/quiz.md)
-  - Docker. Концепция сети в Docker
+  - [Контейнеризация на примере Docker.](/educational_materials/docker_base/content.md)
+    - Задачи
+    - [Вопросы](/educational_materials/docker_base/quiz.md)
+* Дополнительные материалы
+  - [Концепция сети в Docker](/educational_materials/docker_network/content.md)
+
 
 ## Оглавление (obsolete)
 
