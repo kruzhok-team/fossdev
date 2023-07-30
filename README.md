@@ -25,8 +25,10 @@
     - [Задачи](/educational_materials/code_to_lib/exercises.md)
     - [Вопросы](/educational_materials/code_to_lib/quiz.md)
   - [Основы Open Source](/educational_materials/open_source/content.md)
-  - Обзор открытых лицензий и типов проектов для которых они подходят.
-  - Создаем свой первый статичный сайт на GitHub Pages
+  - [Обзор открытых лицензий и типов проектов для которых они подходят](/educational_materials/open_license/content.md)
+  - [Создаем свой первый статичный сайт на GitHub Pages](/educational_materials/github_pages/content.md)
+    - [Задачи](/educational_materials/github_pages/exercises.md)
+    - [Вопросы](/educational_materials/github_pages/quiz.md)
 * Раздел 3. Инструменты
   - [Знакомство с рабочим окружением. Системное окружение. Создание виртуального окружения venv для проекта](/educational_materials/path_venv/content.md)
     - [Задачи](/educational_materials/path_venv/exercises.md)
@@ -47,7 +49,6 @@
     - [Задачи](/educational_materials/managers/exercises.md)
     - [Вопросы](/educational_materials/managers/quiz.md)
   - Docker. Концепция сети в Docker
-
 
 ## Оглавление (obsolete)
 
