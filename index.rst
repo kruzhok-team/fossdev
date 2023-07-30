@@ -3,32 +3,252 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to toolchain's documentation!
+.. toctree::
+   :maxdepth: 3
+   :glob:
+   :caption: Культура и интструменты разработки
+
+
+Терминология 
+============
+
+.. toctree::
+   :maxdepth: 2
+   
+   
+   educational_materials/terms/content.md
+   
+Командная строка 
+================
+
+.. toctree::
+   :maxdepth: 2
+
+   educational_materials/bash/content.md
+   educational_materials/bash/exercises.md
+   educational_materials/bash/quiz.md
+
+Система контроля версий Git
+===========================
+
+.. toctree::
+   :maxdepth: 2   
+   
+   educational_materials/git_base/content.md
+   
+Git как инструмент командной работы. Работа с удаленными репозиториями
+======================================================================
+
+.. toctree::
+   :maxdepth: 2   
+   
+Возможности платформам размещения исходного кода программ на примере Github
+===========================================================================
+
+.. toctree::
+   :maxdepth: 2   
+   
+   
+Среда разработки
+================
+
+.. toctree::
+   :maxdepth: 2
+
+   
+   educational_materials/ide/content.md
+   
+Стили оформления кода 
+=====================
+
+.. toctree::
+   :maxdepth: 2
+
+   educational_materials/styles/content.md
+   educational_materials/styles/exercises.md
+   educational_materials/styles/quiz.md
+
+Польза документации на примере поиска проекта на GitHub
+=======================================================
+
+.. toctree::
+   :maxdepth: 2
+
+   educational_materials/github/content.md
+
+Раздел 2. Работа над проектом
+=============================
+   
+.. toctree::
+   :maxdepth: 3
+   :glob:
+   :caption: Раздел 2. Работа над проектом
+   
+   educational_materials/stages
+   educational_materials/mvp
+
+Стадии жизни проекта
+====================
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/stages/content.md
+
+Минимально полезный продукт
+===========================
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/mvp/content.md
+   
+UML диаграммы
+=============
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/uml/content.md
+   educational_materials/uml/exercises.md
+   educational_materials/uml/quiz.md
+   
+Код vs. Библиотека
+==================
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/code_to_lib/content.md
+   educational_materials/code_to_lib/exercises.md
+   educational_materials/code_to_lib/quiz.md
+
+Основы Open Source
+==================
+
+.. toctree::
+   :maxdepth: 2
+
+   educational_materials/open_source/content.md
+   
+Лицензии Open Source
+====================
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/open_license/content.md
+   
+GitHub Pages
+============
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/github_pages/content.md
+   educational_materials/github_pages/exercises.md
+   educational_materials/github_pages/quiz.md
+
+.. toctree::
+   :maxdepth: 3
+   :glob:
+   :caption: Раздел 3. Инструменты разработки
+
+Виртуальное окружение
+=====================
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/path_venv/content.md
+   educational_materials/path_venv/exercises.md
+   educational_materials/path_venv/quiz.md
+   
+Инструменты для создания документации
 =====================================
 
 .. toctree::
-  :maxdepth: 2
-  :caption: Contents:
+   :maxdepth: 2
+   
+   educational_materials/docs/content.md
+   educational_materials/docs/exercises.md
+   educational_materials/docs/quiz.md
+   
+Основы тестирования
+===================
 
-  00_terms/main.md
-  01_open_source/main.md
-  02_open_license/main.md
-  03_stages/main.md
-  04_mvp/main.md
-  05_git_base/main.md
-  06_github/main.md
-  09_code_to_lib/main.md
-  10_packages/main.md
-  12_docs/main.md
-  13_uml/main.md
-  14_styles/main.md
-  16_bash/main.md
-  17_path_venv/main.md
-  22_ide/main.md
-  23_testing/main.md
-  24_logging/main.md
-  25_docker_base/main.md
-  32_docker_network/main.md
-  33_dockerhub/main.md
-  36_github_pages/main.md
-  
+.. toctree::
+   :maxdepth: 2   
+   
+   educational_materials/testing/content.md
+   educational_materials/testing/exercises.md
+   educational_materials/testing/quiz.md
+   
+Логгирование работы приложения
+==============================
+
+.. toctree::
+   :maxdepth: 2 
+   
+   educational_materials/logging/content.md
+   educational_materials/logging/exercises.md
+   educational_materials/logging/quiz.md
+
+Сборка проекта в pip пакет
+==========================
+
+.. toctree::
+   :maxdepth: 2    
+
+   educational_materials/packaging/content.md
+   educational_materials/packaging/exercises.md
+   educational_materials/packaging/quiz.md
+   
+Менеджеры служб и планировщики задач
+====================================
+
+.. toctree::
+   :maxdepth: 2    
+   
+   educational_materials/managers/content.md
+   educational_materials/managers/exercises.md
+   educational_materials/managers/quiz.md
+   
+Контейнерезация с Dcoker
+========================
+
+.. toctree::
+   :maxdepth: 2   
+   
+   educational_materials/docker_base/content.md
+   educational_materials/docker_base/quiz.md
+   
+Практическое использование Docker
+=================================
+
+.. toctree::
+   :maxdepth: 2   
+   
+   educational_materials/docker_base/content.md
+   educational_materials/docker_base/quiz.md
+
+.. toctree::
+   :maxdepth: 3
+   :glob:
+   :caption: Дополнительные материалы
+
+Работа с сетью в Docker
+=======================
+
+.. toctree::
+   :maxdepth: 2   
+      
+   educational_materials/docker_network/content.md
+   
+Реестр Docker
+=======================
+
+.. toctree::
+   :maxdepth: 2      
+   
+   educational_materials/docker_hub/content.md
