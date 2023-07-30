@@ -39,11 +39,11 @@
 
 Пользоваться `crontab` очень просто, просто наберите в командной строке Linux `crontab -e`:
 
-![crontab_e](./img/corntab_e.png)
+![crontab_e](/graphics/corntab_e.png)
 
 После этого откроется расписание задач, которое можно будет поправить как нужно.
 
-![crontab_schedule](./img/crontab_schedule.png)
+![crontab_schedule](/graphics/crontab_schedule.png)
 
 По умолчанию `crontab` не будет будет логировать вывод вашего приложения (это не касается того, что Вы сами используете внутри кода, например с помощью loguru). Для того чтобы записать вывод вашего приложения можно использовать синтаксис подобный примеру ниже.
 
@@ -65,6 +65,8 @@
 Рассмотрим скрипт, которые собирает информацию о месте на диске которое занимает содержимое директории и сохраняет эту информацию вместе с временем обращения к директории в файл. Настроим `crontab` так чтобы наш скрипт запускался каждые 5 секунд. Мы будем использовать `bash` для написания скрипта, но вы можете написать скрипт на любом языке программирования. 
 
 Файл скрипта `collect_dir_space.sh` будет выглядеть следующим образом: 
+
+([код](/projects/managers/collect_dir_space.sh)):
 
 ```bash
 #!/bin/bash
@@ -95,11 +97,11 @@ sudo chmod +x collect_dir_space.sh
 * * * * * /path/to/collect_dir_space.sh
 ```
 
-![crontab_job_installed](./img/crontab_job_installed.png)
+![crontab_job_installed](/graphics/crontab_job_installed.png)
 
 И проверим что все работает:
 
-![crontab_job_works](./img/crontab_job_works.png)
+![crontab_job_works](/graphics/crontab_job_works.png)
 
 Мы видим, что в файл `/tmp/dir_space.log` добавляется информация о дисковом пространстве занятом файлам в директории. Между вызовами `cat /tmp/dir_space.log` мы скопировали файл `a.png`, который занимает пример 282 кБ.
 
@@ -154,6 +156,8 @@ sudo chmod +x collect_dir_space.sh
 
 Еще одним интересным применением systemctl является мониторинг изменения файлов и отправка уведомлений. Ниже приведен пример сервиса, который будет логировать любую попытку изменения файла (так же можно отправлять уведомдения на почту или в мессенджер). Создам файл для службы и сохраним его в файл с название `pass_monitor.service` в домашней директории.
 
+([код](/projects/managers/pass_monitor.service)):
+
 ```ini
 [Unit] 
 Description="Run script to log pass changed"
@@ -166,6 +170,8 @@ WantedBy=multi-user.target
 ```
 
 Теперь создадим `path unit` который будет следит за файлом и вызывать наш сервис логирования. Создайте файл `pass_monitor.path` c cодержимым.
+
+([код](/projects/managers/pass_monitor.path)):
 
 ```ini
 [Unit]
@@ -194,12 +200,12 @@ sudo systemctl status pass_monitor.service
 sudo systemctl status pass_monitor.path
 ```
 
-![service_unit_status](./img/service_unit_status.png)
-![path_unit_status](./img/path_unit_status.png)
+![service_unit_status](/graphics/service_unit_status.png)
+![path_unit_status](/graphics/path_unit_status.png)
 
 Убедимся, что все работает как задумано:
 
-![pass_change_log](./img/pass_change_log.png)
+![pass_change_log](/graphics/pass_change_log.png)
 
 Как мы видим из примера выше даже при использовании Unit другого типа (Path как в примере) нам все равно нужно создать Unit service, который будет управляться Unit'ом другого типа. Мы указывали его как `Unit=pass_monitor.service`.
 
@@ -215,105 +221,5 @@ sudo systemctl status pass_monitor.path
 
 Так же удобным инструментом для отслеживания работы службы в том числе в режиме реального времени является `journalctl`. Его можно использовать как журнал событий связанных с работой вашего приложения. При этом это универсальный инструмент для систем Linux, который не связан с определенным языком программирования. Он обладает не таким широким функционалом и его вывод не оптимизирован под конкретный язык, как специализированные библиотеки, его использование в некоторых случаях может быть удобнее.
 
-![journalctl](./img/journalctl.png)
+![journalctl](/graphics/journalctl.png)
 
-
-## Задачи
-
-### Задача 1
-
-Напишите расписание cron, которое позволит запускать задачу:
-
-* в 8:30 каждый понедельник.
-* в 12:00 каждый понедельник, среду и пятницу.
-* в 15 минут каждого часа в 00:00, 06:00, 12:00 и 18:00.
-
-**Ответ**
-
-```
-30 8 * * 1              в 8:30 каждый понедельник.
-0 12 * * 1,3,5          в 12:00 каждый понедельник, среду и пятницу.
-15 0,6,12,18 * * *      в 15 минут каждого часа в 00:00, 06:00, 12:00 и 18:00.
-```
-
-* каждые 10 минут в течение часа.
-* в начале каждого часа с 9:00 до 17:00 с понедельника по пятницу.
-* в 30 минут каждого часа с 1:00 до 5:00 и с 12:00 до 15:00.
-
-**Ответ**
-
-```
-*/10 * * * *            каждые 10 минут в течение часа.
-0 9-17 * * 1-5          в начале каждого часа с 9:00 до 17:00 с понедельника по пятницу.
-30 1-5,12-15 * * *      в 30 минут каждого часа с 1:00 до 5:00 и с 12:00 до 15:00.
-```
-
-* каждые 2 минуты. 
-* каждые 3 минуты с 10:00 до 18:00.
-* каждые 10 минут в полночь (0:00) по понедельникам.
-
-**Ответ**
-
-```
-*/2 * * * *             каждые 2 минуты. 
-*/3 10-18 * * *         каждые 3 минуты с 10:00 до 18:00.
-*/10 0 * * 1            каждые 10 минут в полночь (0:00) по понедельникам.
-```
-
-
-### Задача 2
-
-Создайте скрипт и соответствующие unit'ы systemctl для следующей задачи: нужно отследить изменения в файле и если он содержит подстроку "critical error" отправить сообщение пользователю. 
-
-**Ответ**
-
-Скрипт для проверки `check_script.sh`.
-
-```bash
-#!/bin/bash
-
-file="/path/to/watched/file"
-substring="critical error"
-
-if grep -q "$substring" "$file"; then
-    echo "Found critical error in $file"
-    # Add your notification command here, e.g., sendmail or notify-send
-else
-    echo "No critical error found in $file"
-fi
-```
-
-Конфигурация для Unit service `check_critical.service`:
-
-```ini
-[Unit]
-Description=Check File for Critical Error
-
-[Service]
-Type=simple
-ExecStart=/path/to/your/check_script.sh
-```
-
-Конфигурация для Unit path `check_critical.path`:
-
-```ini
-[Unit]
-Description=Watch My File
-
-[Path]
-PathModified=/path/to/watched/file
-Unit=check_critical.service
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Код для активации сервиса:
-
-```bash 
-sudo chmod +x check_script.sh
-sudo systemctl enable /path/to/check_critical.service
-sudo systemctl enable /path/to/check_critical.service
-sudo systemctl start pass_monitor.path
-
-```

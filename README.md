@@ -5,16 +5,16 @@
 * Раздел 1. Введение, подходы к программированию
   - [Терминология](/educational_materials/terms/content.md)
   - [Командная строка как универсальный способ взаимодействия с любым компьютером](/educational_materials/bash/content.md)
-    - [Вопросы](/educational_materials/bash/quiz.md)
     - [Задачи](/educational_materials/bash/exercises.md)
+    - [Вопросы](/educational_materials/bash/quiz.md)
   - Система контроля версий git. Основные понятия. Работа с локальным репозиторием. Локальное использование
   - Git как инструмент командной работы. Работа с удаленными репозиториями.
   - Знакомство платформами размещения исходного кода программ на примере Github
   - Знакомство с рабочим окружением. Системное окружение. Создание виртуального окружения venv для проекта
   - [Среды разработки. Основные возможности](/educational_materials/ide/content.md)
   - [Оформление кода. Виды стилей. Автоматические средства для форматирование](/educational_materials/styles/content.md)
-    - [Вопросы](/educational_materials/styles/quiz.md)
     - [Задачи](/educational_materials/styles/exercises.md)
+    - [Вопросы](/educational_materials/styles/quiz.md)
   - Зачем нужно документирование. Учимся читать и использовать в своем проекте чужой код с Github
 * Раздел 2. Работа над проектом
   - [Стадии жизни проекта](/educational_materials/stages/content.md)
@@ -39,6 +39,9 @@
   - [Менеджеры пакетов Python. Сборка проекта](/educational_materials/packaging/content.md)
     - [Задачи](/educational_materials/packaging/exercises.md)
     - [Вопросы](/educational_materials/packaging/quiz.md)
+  - [Управление вызовом приложений - автоматизация процессов, посредством планировщика задач crontab и systemctl](/educational_materials/managers/content.md)
+    - [Задачи](/educational_materials/managers/exercises.md)
+    - [Вопросы](/educational_materials/managers/quiz.md)
   - Docker. Концепция сети в Docker
 
 

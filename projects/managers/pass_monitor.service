@@ -1,0 +1,8 @@
+[Unit] 
+Description="Run script to log pass changed"
+
+[Service]
+ExecStart=/bin/bash -c "echo Changed >> /tmp/pass_change.log"
+
+[Install]
+WantedBy=multi-user.target
