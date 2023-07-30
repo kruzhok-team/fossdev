@@ -1,0 +1,21 @@
+PACKAGE_NAME := useful-utils
+PYTHON := python3
+DOCS_DIR := docs
+
+.PHONY: install test clean package docs
+
+install:
+	@echo "Installing dependencies..."
+	$(PYTHON) -m pip install -r requirements.txt
+
+test:
+	@echo "Running tests..."
+	$(PYTHON) -m pytest
+
+clean:
+	@echo "Cleaning up..."
+	rm -rf dist/ build/ docs/ *.egg-info
+
+docs:
+	@echo "Generating documentation..."
+	pdoc --html $(PACKAGE_NAME) --output-dir $(DOCS_DIR) --force

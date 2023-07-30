@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch My File
+
+[Path]
+PathModified=/path/to/watched/file
+Unit=check_critical.service
+
+[Install]
+WantedBy=multi-user.target

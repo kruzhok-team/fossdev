@@ -17,7 +17,8 @@ release = '1.0'
 extensions = ['myst_parser']
 
 templates_path = ['_templates']
-exclude_patterns = []
+exclude_patterns = ['projects/mtracker/*',
+                    'README.md']
 
 language = 'ru'
 
@@ -32,3 +33,4 @@ source_suffix = {
     '.txt': 'restructuredtext',
     '.md': 'markdown',
 }
+

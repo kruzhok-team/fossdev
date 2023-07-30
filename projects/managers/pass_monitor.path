@@ -1,0 +1,9 @@
+[Unit]
+Description="Monitor the /tmp/passwd file for changes"
+
+[Path]
+PathModified=/tmp/passwd
+Unit=pass_monitor.service
+
+[Install]
+WantedBy=multi-user.target
