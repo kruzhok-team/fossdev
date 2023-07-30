@@ -18,7 +18,9 @@
 * Раздел 2. Работа над проектом
   - [Стадии жизни проекта](/educational_materials/stages/content.md)
   - [Работа над MVP. Этапы разработки и проверка гипотез](/educational_materials/mvp/content.md)
-  - UML диаграммы
+  - [UML диаграммы](/educational_materials/uml/content.md)
+    - [Задачи](/educational_materials/uml/exercises.md)
+    - [Вопросы](/educational_materials/uml/quiz.md)
   - [Код -> Библиотека](/educational_materials/code_to_lib/content.md)
     - [Задачи](/educational_materials/code_to_lib/exercises.md)
     - [Вопросы](/educational_materials/code_to_lib/quiz.md)
