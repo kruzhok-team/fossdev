@@ -33,7 +33,9 @@
   - [Автотесты и культура разработки кода test-driven-development](/educational_materials/testing/content.md)
     - [Задачи](/educational_materials/testing/exercises.md)
     - [Вопросы](/educational_materials/testing/quiz.md)
-  - Логирование работы приложения
+  - [Логирование работы приложения](/educational_materials/logging/content.md)
+    - [Задачи](/educational_materials/logging/exercises.md)
+    - [Вопросы](/educational_materials/logging/quiz.md)
   - Менеджеры пакетов Python. Сборка проекта
   - Docker. Концепция сети в Docker
 
