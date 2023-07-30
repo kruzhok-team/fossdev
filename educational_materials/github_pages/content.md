@@ -1,4 +1,5 @@
-## Что такое Github Pages?
+# Github Pages?
+
 ![](https://quibtech.com/p/host-your-website-on-github/featuredImage_hu03ad3acbd1f4d769a3b53df03af47292_58966_800x0_resize_box_3.png)
 
 GitHub Pages — это служба веб-хостинга, предоставляемая GitHub, которая позволяет пользователям бесплатно размещать статические веб-сайты. Пользователи могут создать репозиторий на GitHub, содержащий файлы HTML, CSS и JavaScript своего веб-сайта, а затем GitHub Pages автоматически создаст и развернет веб-сайт на основе содержимого репозитория.
@@ -57,7 +58,7 @@ GitHub Pages работает, размещая статические файл�
 
 ([код](/projects/github_pages/portfolio.html)):
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -197,7 +198,17 @@ GitHub Pages работает, размещая статические файл�
                 <input type="email" id="email" name="email"><br>
 
                 <label for="message">Message:</label>
-                <textarea id="message" name="message"></
+                <textarea id="message" name="message"></textarea><br>
+
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>Copyright &copy; 2023 Ivan Ivanov</p>
+    </footer>
+</body>
+</html>S
 ```
 
 ### С какой целью используют сервис GitHub

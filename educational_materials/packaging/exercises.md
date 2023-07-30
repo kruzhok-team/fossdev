@@ -6,7 +6,7 @@
 
 **Ответ**
 
-([код](projects/packaging/pep_formating/makefile)):
+([код](/projects/packaging/pep_formating/makefile)):
 
 ```makefile
 PACKAGE_NAME := mtracker
@@ -50,7 +50,7 @@ format:
 
 **Ответ**
 
-([код](projects/packaging/setup_to_build/makefile)):
+([код](/projects/packaging/setup_to_build/makefile)):
 
 ```makefile
 PACKAGE_NAME := mtracker

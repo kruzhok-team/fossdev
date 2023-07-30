@@ -90,10 +90,10 @@
 Если ошибиться в пути, будет показан текст из `[]`:
 
 ```
-![opensource_icon](/graphics/not_exist.png")
+![opensource_icon](https://not_existing_site/graphics/not_exist.png)
 ```
 
-![opensource_icon](/graphics/not_exist.png)
+![opensource_icon](https://not_existing_site/graphics/not_exist.png)
 
 **Задание: проверьте, можно ли вести список картинок отдельными и вставлять их, используя id**
 
@@ -244,7 +244,7 @@ pip install --upgrade myst-parser
 
 Укажите какие файлы должны войти в документацию:
 
-```bash
+```rst
 .. toolchain documentation master file, created by
    sphinx-quickstart on Wed Mar  1 10:24:16 2023.
    You can adapt this file completely to your liking, but it should at least

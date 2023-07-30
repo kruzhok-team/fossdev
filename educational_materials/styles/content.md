@@ -53,7 +53,7 @@ Namespaces are one honking great idea -- let's do more of those!
 
 Код без отступов:
 
-([код](/projects/styles/no_indended_code.cpp)):
+([код](/projects/styles/no_indented_code.cpp)):
 
 ```c++
 #include <iostream>
@@ -79,7 +79,7 @@ return 0;
 
 Код с отступами:
 
-([код](/projects/styles/indended_code.cpp)):
+([код](/projects/styles/indented_code.cpp)):
 
 ```c++
 #include <iostream>

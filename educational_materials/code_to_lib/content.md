@@ -264,7 +264,7 @@ def execute_and_get_memory_usage(function, *args, **kwargs):
 
 И снабдим наш проект тестом. Здесь мы написали всего один тест, который проверит, не ломает ли наш трекер работу функций на примере функции, которая возвращает список.
 
-([код](/projects/mtracker/test/mtracker.py)):
+([код](/projects/mtracker/test/test_mtracker.py)):
 
 ```python
 import pytest
