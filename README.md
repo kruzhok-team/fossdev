@@ -1,4 +1,4 @@
-# Культура и инструменты open source разработки
+ # Культура и инструменты open source разработки
 
 ## Оглавление
 
@@ -9,7 +9,7 @@
     - [Вопросы](/educational_materials/bash/quiz.md)
   - [Система контроля версий git. Основные понятия. Работа с локальным репозиторием. Локальное использование](/educational_materials/git_base/content.md)
   - Git как инструмент командной работы. Работа с удаленными репозиториями.
-  - Знакомство платформами размещения исходного кода программ на примере Github
+  - Знакомство с платформами размещения исходного кода программ на примере Github
   - [Среды разработки. Основные возможности](/educational_materials/ide/content.md)
   - [Оформление кода. Виды стилей. Автоматические средства для форматирование](/educational_materials/styles/content.md)
     - [Задачи](/educational_materials/styles/exercises.md)
@@ -25,7 +25,7 @@
     - [Задачи](/educational_materials/code_to_lib/exercises.md)
     - [Вопросы](/educational_materials/code_to_lib/quiz.md)
   - [Основы Open Source](/educational_materials/open_source/content.md)
-  - [Обзор открытых лицензий и типов проектов для которых они подходят](/educational_materials/open_license/content.md)
+  - [Обзор открытых лицензий и типов проектов, для которых они подходят](/educational_materials/open_license/content.md)
   - [Создаем свой первый статичный сайт на GitHub Pages](/educational_materials/github_pages/content.md)
     - [Задачи](/educational_materials/github_pages/exercises.md)
     - [Вопросы](/educational_materials/github_pages/quiz.md)
@@ -45,7 +45,7 @@
   - [Менеджеры пакетов Python. Сборка проекта](/educational_materials/packaging/content.md)
     - [Задачи](/educational_materials/packaging/exercises.md)
     - [Вопросы](/educational_materials/packaging/quiz.md)
-  - [Управление вызовом приложений - автоматизация процессов, посредством планировщика задач crontab и systemctl](/educational_materials/managers/content.md)
+  - [Управление вызовом приложений: автоматизация процессов посредством планировщика задач crontab и systemctl](/educational_materials/managers/content.md)
     - [Задачи](/educational_materials/managers/exercises.md)
     - [Вопросы](/educational_materials/managers/quiz.md)
   - [Контейнеризация на примере Docker.](/educational_materials/docker_base/content.md)
