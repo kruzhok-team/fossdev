@@ -4,7 +4,7 @@
 
 Трудно определить точное количество людей, использующих Git. Тем не менее, Git широко применяется разработчиками и организациями по всему миру и считается самой популярной системой контроля версий.
 
-![Git-Logo-2Color.png](/graphics/git_base/posts/github-pages/Git-Logo-2Color.png)
+![Git-Logo-2Color.png](/graphics/git_base/Git-Logo-2Color.png)
 
 
 **Git** — это система управления версиями (*Version Control System, VCS*) с распределенным контролем состояния репозитория. Это значит, что каждый разработчик имеет полную копию репозитория (директория, содержащая все файлы проекта и историю изменений этих файлов) на локальном компьютере. Это позволяет команде разработчиков работать с кодом проекта одновременно и без конфликтов. 
@@ -27,19 +27,19 @@ Git — это система контроля версий, созданная 
 
 ![git_base_git_download.png](/graphics/git_base/git_base_git_download.png)
 
-В случае, если вы используете ОС Windows, выберите подходящий вариант, соответствующий разрядности вашей ОС (x64, x32).  
+В случае, если вы используете ОС Windows, выберите подходящий вариант, соответствующий разрядности вашей ОС (x64, x32).
 
 ![git_base_git_download_windows64.png](/graphics/git_base/git_base_git_download_windows64.png)
 
 Запустите установочный файл и следуйте инструкциям.
 
-![img_1_3.png](/graphics/git_base/img_1_3.png)
+![git_base_install_git_windows.png](/graphics/git_base/git_base_install_git_windows.png)
 
-![img_1_4.png](/graphics/git_base/img_1_4.png)
+![git_base_install_progress.png](/graphics/git_base/git_base_install_progress.png)
 
 В результате у вас должно отобразиться следующее окно, сообщающее об успешной установке Git на ваш компьютер.
 
-![git_base_install_git_windows.png](/graphics/git_base/git_base_install_git_windows.png)
+![git_base_finish_install.png](/graphics/git_base/git_base_finish_install.png)
 
 После завершения установки убедимся в том, что ***Git*** корректно установился на компьютер и мы можем приступать к работе. Для этого откроем командную строку в Windows и введем команду **git**, как это показано на рисунке 2. 
 
