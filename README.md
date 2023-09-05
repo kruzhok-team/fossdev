@@ -8,8 +8,12 @@
     - [Задачи](/educational_materials/bash/exercises.md)
     - [Вопросы](/educational_materials/bash/quiz.md)
   - [Система контроля версий git. Основные понятия. Работа с локальным репозиторием. Локальное использование](/educational_materials/git_base/content.md)
-  - Git как инструмент командной работы. Работа с удаленными репозиториями.
-  - Знакомство с платформами размещения исходного кода программ на примере Github
+  - [Git как инструмент командной работы. Работа с удаленными репозиториями.](/educational_materials/team_work_on_a_project/content.md)
+    - [Задачи](/educational_materials/team_work_on_a_project/exercises.md)
+    - [Вопросы](/educational_materials/team_work_on_a_project/quiz.md)
+  - [Знакомство с платформами размещения исходного кода программ на примере GitFlic.](/educational_materials/team_work_on_a_gitflic/content.md)
+    - [Задачи](/educational_materials/team_work_on_a_gitflic/exercises.md)
+    - [Вопросы](/educational_materials/team_work_on_a_gitflic/quiz.md)
   - [Среды разработки. Основные возможности](/educational_materials/ide/content.md)
   - [Оформление кода. Виды стилей. Автоматические средства для форматирование](/educational_materials/styles/content.md)
     - [Задачи](/educational_materials/styles/exercises.md)
