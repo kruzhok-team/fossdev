@@ -53,7 +53,7 @@
     - [Задачи](/educational_materials/managers/exercises.md)
     - [Вопросы](/educational_materials/managers/quiz.md)
   - [Контейнеризация на примере Docker.](/educational_materials/docker_base/content.md)
-    - Задачи
+    - [Задачи](/educational_materials/docker_base/exercises.md)
     - [Вопросы](/educational_materials/docker_base/quiz.md)
   - Практическое использование Docker
 * Дополнительные материалы
