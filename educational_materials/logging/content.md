@@ -398,6 +398,31 @@ logger.addHandler(handler)
 
 ```
 
+Сообщения будут выглядеть следующим образом:
+
+```bash 
+artem@pc:~$ uvicorn main_v3:app --port 8008
+INFO:     Loaded 2 devices from disk.
+{"timestamp": "2025-03-17 23:44:51,804", "level": "INFO", "message": "Loaded 2 devices from disk.", "module": "main_v3", "function": "load_devices"}
+INFO:     Started server process [2030033]
+{"timestamp": "2025-03-17 23:44:51,806", "level": "INFO", "message": "Started server process [2030033]", "module": "server", "function": "_serve"}
+INFO:     Waiting for application startup.
+{"timestamp": "2025-03-17 23:44:51,806", "level": "INFO", "message": "Waiting for application startup.", "module": "on", "function": "startup"}
+INFO:     Application startup complete.
+{"timestamp": "2025-03-17 23:44:51,807", "level": "INFO", "message": "Application startup complete.", "module": "on", "function": "startup"}
+INFO:     Uvicorn running on http://127.0.0.1:8008 (Press CTRL+C to quit)
+{"timestamp": "2025-03-17 23:44:51,808", "level": "INFO", "message": "Uvicorn running on http://127.0.0.1:8008 (Press CTRL+C to quit)", "module": "server", "function": "_log_started_message"}
+^CINFO:     Shutting down
+{"timestamp": "2025-03-18 00:01:53,374", "level": "INFO", "message": "Shutting down", "module": "server", "function": "shutdown"}
+INFO:     Waiting for application shutdown.
+{"timestamp": "2025-03-18 00:01:53,475", "level": "INFO", "message": "Waiting for application shutdown.", "module": "on", "function": "shutdown"}
+INFO:     Application shutdown complete.
+{"timestamp": "2025-03-18 00:01:53,475", "level": "INFO", "message": "Application shutdown complete.", "module": "on", "function": "shutdown"}
+INFO:     Finished server process [2030033]
+{"timestamp": "2025-03-18 00:01:53,475", "level": "INFO", "message": "Finished server process [2030033]", "module": "server", "function": "_serve"}
+```
+
+
 ## Централизация логов
 
 Централизация логов относится к практике сбора данных журнала из нескольких источников и хранения их в центральном хранилище. Это облегчает управление всей информацией и ее отслеживание, так что вы можете использовать ее для решения проблем и убедиться, что все работает правильно. Наличие всех логов в одном месте также повышает безопасность и помогает уберечь информацию от потери. И это также может ускорить и упростить поиск и устранение проблем, потому что вам не нужно просматривать информацию из множества разных мест.
