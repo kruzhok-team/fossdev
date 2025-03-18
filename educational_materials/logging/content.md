@@ -249,6 +249,155 @@ nested(1)
 
 Как видно, все библиотеки имеют почти одинаковый функционал. Лучшая библиотека ведения журнала для вашего проекта будет зависеть от ваших конкретных потребностей. 
 
+## Практическое использование логов
+
+Начнем с небольшого сервиса для регистрации в
+
+([код](/projects/logging/iot_service/main_v1.py)):
+
+```python
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from pathlib import Path
+from tempfile import gettempdir
+import json
+
+DATA_FILE = Path(gettempdir()) / "devices.json"
+
+app = FastAPI()
+
+# In-memory storage for demonstration purposes
+
+devices = {}
+
+def load_devices():
+    """Loads registered devices from a file."""
+    global devices
+    if DATA_FILE.exists():
+        try:
+            with open(DATA_FILE, "r") as f:
+                devices = json.load(f)
+        except (json.JSONDecodeError, IOError) as e:
+            devices = {}  # Reset to avoid corrupted data
+    else:
+        raise RuntimeError("Device 'DB' is not found")
+
+def save_devices():
+    """Saves registered devices to a file."""
+    with open(DATA_FILE, "w") as f:
+        json.dump(devices, f, indent=4)
+
+load_devices() 
+
+class Device(BaseModel):
+    device_id: str = Field("00:00:00:00:00:00")
+    location: str = Field("Bratsk")
+    owner: str = Field("Lyceum")
+    measurement_type: str = Field("temperature")
+    sensor_model: str = Field(..., description="Put particular sensor model name here")
+
+@app.post("/register")
+async def register_device(device: Device):
+    if device.device_id in devices:
+        raise HTTPException(status_code=400, detail="Device already registered")
+    
+    devices[device.device_id] = device.model_dump()
+    save_devices()
+    return {"message": "Device registered successfully"}
+
+@app.get("/devices")
+async def list_devices():
+    return devices
+
+@app.get("/device/{device_id}")
+async def get_device(device_id: str):
+    if device_id not in devices:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return devices[device_id]
+
+```
+
+Когда мы запустим сервис мы увидим логи самого uvicorn, но там будут содержаться только информация о запросах:
+
+```bash 
+artem@pc:~$ uvicorn main_v1:app --port 8008
+    INFO:     Started server process [2022070]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    INFO:     Uvicorn running on http://127.0.0.1:8008 (Press CTRL+C to quit)
+    INFO:     127.0.0.1:50252 - "POST /register HTTP/1.1" 200 OK
+    INFO:     127.0.0.1:50252 - "POST /register HTTP/1.1" 400 Bad Request
+```
+
+Мы можем добавить к этому свое логирование. Ниже показана часть кода:
+
+([полный код](/projects/logging/iot_service/main_v2.py)):
+
+```python
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+
+def save_devices():
+    """Saves registered devices to a file."""
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(devices, f, indent=4)
+        logging.debug("Devices successfully saved to disk.")
+    except IOError as e:
+        logging.critical(f"Failed to save devices to disk: {e}")
+
+```
+
+
+```bash 
+artem@pc:~$ uvicorn main_v2:app --port 8008
+    2025-03-17 23:39:14 [INFO] Loaded 1 devices from disk.
+    INFO:     Started server process [2026670]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    INFO:     Uvicorn running on http://127.0.0.1:8008 (Press CTRL+C to quit)
+    INFO:     127.0.0.1:58200 - "GET /docs HTTP/1.1" 200 OK
+    INFO:     127.0.0.1:58200 - "GET /openapi.json HTTP/1.1" 200 OK
+    2025-03-17 23:39:23 [DEBUG] Received registration request for device_id: 00:00:00:00:00:00
+    2025-03-17 23:39:23 [WARNING] Device 00:00:00:00:00:00 is already registered.
+    INFO:     127.0.0.1:58200 - "POST /register HTTP/1.1" 400 Bad Request
+    2025-03-17 23:40:26 [DEBUG] Received registration request for device_id: 00:00:00:00:00:01
+    2025-03-17 23:40:26 [DEBUG] Devices successfully saved to disk.
+    2025-03-17 23:40:26 [INFO] Device 00:00:00:00:00:01 registered successfully.
+    INFO:     127.0.0.1:51280 - "POST /register HTTP/1.1" 200 OK
+```
+
+Далее мы можем снабдить наш логгер дополнительными обработчиком:
+
+([полный код](/projects/logging/iot_service/main_v3.py)):
+
+```python 
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        log_message = {
+            "timestamp": self.formatTime(record),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "module": record.module,
+            "function": record.funcName
+        }
+        return json.dumps(log_message)
+
+# Configure structured logging
+logger = logging.getLogger("uvicorn")
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setFormatter(JSONFormatter())
+logger.addHandler(handler)
+
+```
+
 ## Централизация логов
 
 Централизация логов относится к практике сбора данных журнала из нескольких источников и хранения их в центральном хранилище. Это облегчает управление всей информацией и ее отслеживание, так что вы можете использовать ее для решения проблем и убедиться, что все работает правильно. Наличие всех логов в одном месте также повышает безопасность и помогает уберечь информацию от потери. И это также может ускорить и упростить поиск и устранение проблем, потому что вам не нужно просматривать информацию из множества разных мест.
