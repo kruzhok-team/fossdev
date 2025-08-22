@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "depinj"
+version = "0.1.0"
+description = "This is to demonstrate the use of dependency injection"
+authors = ["Artem Vesnin <artemvesnin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["standard"], version = "^0.115.12"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
