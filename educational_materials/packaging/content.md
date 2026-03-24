@@ -1,388 +1,305 @@
-# Менеджеры пакетов
+# Сборка проекта и установка пакета на примере Python
 
-Мы уже умеем размещать свой код на платформах типа GitHub, для того чтобы контролировать версию кода и иметь возможность взять код себе на машину локально, отправить свои правки, получать красивую визуализацию коммитов, а также получать обратную связь от других разработчиков в виде `issue`, `fork`, `merge request` и так далее. Попробуем теперь воспользоваться кодом не как программисты-разработчики, а как программисты-пользователи. Да, каждый раз когда мы пишем:
+## Зачем вообще нужна упаковка проекта
+
+Мы уже умеем хранить код в Git-репозитории, клонировать его, переключаться между ветками и отправлять изменения. Но этого недостаточно, чтобы проектом было удобно пользоваться как библиотекой. Когда мы пишем:
 
 ```python
 import lib_name
 lib_name.do_something()
 ```
 
-Мы являемся пользователем функции `do_something()` из библиотеки `lib_name`. Как же нам получить do_something() там, где мы пишем код, и воспользоваться ей? Рассмотрим сначала простые, но неправильные способы, и потом рассмотрим, как сделать это правильно.
+мы выступаем не как авторы библиотеки, а как её пользователи. Значит, у нас должен быть понятный и воспроизводимый способ получить библиотеку, её зависимости и совместимую версию в своё окружение.
 
-## Ctrl-C/Ctrl-V
+Мы уже использовали `setup.py` для целей установки проекта. Более современная версия точки входа для сборки проекта - это `pyproject.toml`. Именно там описывается, как проект собирать, какие у него метаданные и какие зависимости ему нужны во время выполнения. Для библиотек это лучше, чем разносить ключевую информацию по разным файлам и тем более лучше, чем собирать зависимости вручную из lock-файлов. Сравненние pyproject.toml и setup.py приведено в конце урока.
 
-Первый наивный способ — это просто скопировать функцию себе и вызвать там, где нужно (не делайте так).
+## Неправильные и неудобные способы использовать чужой код
+
+### Ctrl-C / Ctrl-V
+
+Самый наивный путь — просто скопировать нужную функцию или модуль себе в проект.
 
 Почему это плохо:
 
-* теряется поддержка. Если разработчики найдут проблему в коде и устранят его, мы не получим эти изменения, если не находимся в режиме мониторинга версий этого пакета;
-* тянем кучу другого кода. Скорее всего, у вас даже не получится так просто скопировать отдельную функцию, так как она использует другой код из этого пакета;
-* теряется контроль зависимостей. Если для работы функций необходима другая библиотека определенной версии, это никак не отображается в коде, `import matplotlib` подключит ту библиотеку, которая установлена в окружении. Установка `pip install matplotlib` также ничего не даст — будет установлена последняя версия библиотеки `matplotlib`. Правильная версия библиотеки должна располагаться в правильно структурированном репозитории, и чтобы ее найти, нужно совершить дополнительное действие;
-* нет возможность запустить тесты. Как правило, в библиотеках содержатся тесты, которые можно запустить и проверить, все ли корректно работает именно на этой машине. Просто копируя функцию, мы не подтягиваем автоматически тесты.
+* вы отрываете код от его истории и перестаёте получать исправления;
+* легко потерять скрытые зависимости между модулями;
+* вы не видите, какие версии зависимостей нужны проекту;
+* вы не получаете нормальный путь обновления;
+* вы не воспроизводите реальную установку и реальное окружение пользователя.
 
-## Клонируем и указываем путь через sys
+### Клонировать репозиторий и руками править `sys.path`
 
-Мы можем сделать клон репозитория:
+Это уже лучше, потому что у вас есть исходники, тесты и структура проекта, но по-прежнему неудобно:
+
+* установка превращается в ручную процедуру;
+* проект подключается через “костыль” в коде или через `PYTHONPATH`;
+* обновление и повторяемость окружения остаются проблемой;
+* сам способ использования библиотеки получается неестественным.
+
+Такой путь полезно показать студентам как промежуточный шаг в понимании проблемы, но не как целевую практику.
+
+## Как выглядит installable Python-проект
+
+Минимальная структура проекта:
+
+```text
+mtracker/
+├── pyproject.toml или setup.py
+├── README.md
+├── LICENSE
+├── Makefile
+├── src/
+│   └── mtracker/
+│       ├── __init__.py
+│       └── ...
+└── tests/
+    └── ...
+```
+
+Ключевой файл здесь — `pyproject.toml`. PyPA рекомендует иметь его в корне проекта (**не репозитория** - помним про организацию в виде моноропозитория), а стандартным инструментом для сборки source distribution и wheel считает `build`. Напрямую вызывать `python setup.py sdist` и `python setup.py bdist_wheel` не нужно. ([Python Packaging][3])
+
+## Что должен уметь пользователь проекта
+
+Для пользователя библиотеки есть четыре базовых сценария:
+
+### 1. Установка из PyPI
 
 ```bash
-git clone url
+python -m pip install mtracker
 ```
-и установить все необходимые библиотеки, используемые в проекте, в том случае, если таковые имеются. Для этого в репозитории помимо кода можно найти файл `requirements.txt`, который предназначен для перечисления названий пакетов (библиотек) с указанием их версий. Таким образом, вы сможете использовать точные версии всех библиотек, которыми пользовался разработчик. После того, как вы клонировали репозиторий, в котором присутствует файл `requirements.txt`, вам следует установить перечисленные в нем библиотеки. Это можно выполнить, используя менеджер пакетов `pip`, командой:
+
+Это самый обычный сценарий: `pip` находит пакет в индексе и устанавливает его.
+
+### 2. Установка из локального исходного дерева
 
 ```bash
-pip install -r requirements.txt
+python -m pip install .
 ```
 
-Если нам повезет, там будут указаны версии библиотек, для которых разработчик тестировал работоспособность этого пакета. Также мы можем прогнать тесты и убедиться, что все работает как надо. После этого мы можем указать путь до библиотеки прямо в коде (актуально для Python 3.5+):
+Так устанавливают проект из текущего каталога. Это ближе всего к реальной установке и полезно для CI, сборки и проверок перед публикацией. ([Pip Documentation][4])
+
+### 3. Editable install для разработки
+
+```bash
+python -m pip install -e .
+```
+
+Editable install не копирует файлы проекта в site-packages, а подключает исходное дерево напрямую. Это удобно именно для разработки: код меняется, и изменения сразу видны без переустановки. При этом важно помнить, что поведение editable install и обычной установки может отличаться, поэтому перед релизом полезно проверять и “обычную” установку тоже. ([Pip Documentation][4])
+
+### 4. Установка собранного wheel
+
+```bash
+python -m pip install dist/*.whl
+```
+
+Wheel — это готовый дистрибутив для установки. PyPA рекомендует публиковать и wheel, и sdist: wheel ускоряет установку, а sdist нужен как исходный дистрибутив и резервный путь для систем, где готового wheel нет. ([Python Packaging][5])
+
+## Установка прямо из GitHub
+
+Иногда пакет ещё не опубликован в PyPI, но репозиторий уже оформлен как installable-проект. Тогда `pip` умеет ставить пакет прямо из Git-репозитория. Общая форма — `ProjectName @ VCS_URL`. Для Git это выглядит так: ([Pip Documentation][6])
+
+```bash
+python -m pip install "mtracker @ git+https://github.com/standlab/mtracker.git"
+#python -m pip install "mtracker @ git+https://github.com/ORG/mtracker.git@v1.0.0"
+#python -m pip install "mtracker @ git+https://github.com/ORG/mtracker.git@main"
+```
+
+Практическое замечание: для воспроизводимости лучше ставить не `main`, а конкретный тег релиза или commit/tag, который вы контролируете. Кроме того, если подходящая версия уже установлена, `pip` не обязан переустанавливать пакет только потому, что изменился commit; в таких случаях может понадобиться `--upgrade`. ([Pip Documentation][7])
+
+## Отдельно: установка пакета из монорепозитория
+
+Если Python-пакет лежит не в корне репозитория, а внутри подпроекта, `pip` умеет установить его через `#subdirectory=...`. Это официальный сценарий для VCS URL. ([Pip Documentation][7])
+
+Пример структуры монорепозитория:
+
+```text
+repo/
+├── libs/
+│   └── mtracker/
+│       ├── pyproject.toml
+│       └── src/
+└── apps/
+    └── analytics_api/
+        ├── pyproject.toml
+        └── src/
+```
+
+Установка пакета из подпапки такого репозитория:
+
+```bash
+python -m pip install \
+  "ndfl @ git+https://github.com/vesninam/test-git-fossdev3.git@master#subdirectory=testing/tdd"
+```
+
+Это стоит вынести в отдельный подраздел занятия, потому что студентам часто кажется, что installable-проект обязан лежать в корне репозитория. На практике это не так: главное, чтобы в указанной подпапке был полноценный Python-проект со своим `pyproject.toml`.
+
+## Что хранить в `pyproject.toml`
+
+* `[build-system]` описывает backend сборки;
+* `[project]` хранит основные метаданные и runtime-зависимости;
+* dev-инструменты собраны в Poetry group.
+
+Poetry поддерживает runtime-зависимости в `project.dependencies` по PEP 621, а dev-зависимости — через dependency groups. Для Poetry 2 это хороший и современный вариант. ([Poetry][8])
+
+Пример:
+
+```toml
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "mtracker"
+version = "1.0.0"
+description = "Simple tracker package used in course examples"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "matplotlib>=3.8,<4.0"
+]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+ruff = "^0.11.0"
+mypy = "^1.10.0"
+build = "^1.2.0"
+twine = "^6.1.0"
+```
+
+Поле `requires-python` важно показывать отдельно: именно оно ограничивает допустимые версии Python для установки. Одних classifiers для этого недостаточно. ([Python Packaging][9])
+
+## Сборка проекта
+
+Сегодня стандартный путь сборки — это:
+
+```bash
+python -m build
+```
+
+Эта команда вызывает backend, описанный в `pyproject.toml`, и по умолчанию собирает и source distribution, и wheel. Именно этот путь PyPA рекомендует вместо прямых вызовов `python setup.py sdist` и `python setup.py bdist_wheel`. ([Python Packaging][1])
+
+После сборки в каталоге `dist/` обычно появляются два файла:
+
+* `mtracker-1.0.0.tar.gz` — sdist;
+* `mtracker-1.0.0-py3-none-any.whl` — wheel.
+
+Для pure-Python проекта wheel часто имеет вид `py3-none-any`, то есть не привязан к платформе и конкретной реализации Python 3. ([Python Packaging][5])
+
+## Публикация в TestPyPI
+
+Для учебного проекта лучше сначала публиковать пакет в TestPyPI, а не в основной индекс. PyPA рекомендует использовать для загрузки `twine`, а не `python setup.py upload`. ([Python Packaging][1])
+
+Проверка и публикация:
+
+```bash
+python -m twine check dist/*
+python -m twine upload --repository testpypi dist/*
+```
+
+Установка из TestPyPI:
+
+```bash
+python -m pip install \
+  --index-url https://test.pypi.org/simple/ \
+  --extra-index-url https://pypi.org/simple/ \
+  mtracker
+```
+
+`--extra-index-url` полезен, если у вашего тестового пакета есть зависимости, которых нет в TestPyPI, но которые есть в основном PyPI. Именно такой сценарий рекомендует документация PyPA. ([Python Packaging][13])
+
+## Что важно запомнить
+
+1. Git-репозиторий и installable-пакет — это не одно и то же.
+2. Для современного Python-проекта центральный файл — `pyproject.toml`.
+3. `setup.py` как конфиг ещё допустим, но запускать `python setup.py ...` напрямую не надо.
+4. Runtime-зависимости библиотеки должны жить в метаданных проекта, а не извлекаться из `requirements.txt` или lock-файла.
+5. Для разработки полезен editable install, но перед публикацией нужно отдельно проверить обычную установку или установку wheel.
+6. Пакет можно ставить не только из PyPI, но и прямо из Git-репозитория.
+7. Если пакет лежит внутри монорепозитория, `pip` умеет ставить его через `#subdirectory=...`. ([Python Packaging][3])
+
+
+## Доп. материал (сравненние pyproject.toml и setup.py)
+
+Чтобы было понятнее в чем сходства и различия в `setup.py` и `pyproject.toml` соберем их в одной таблице.
+
+| Назначение                                                                                                                                     | `setup.py`                                         | `pyproject.toml`                                                                                      | Кем / для чего используется                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **Модель описания проекта**: в одном случае можно программно описывать логику, в другом — декларативно описывать метаданные и параметры сборки | Императивный подход: исполняемый Python-скрипт     | Декларативный подход: статический TOML-файл                                                           | `setuptools`, `distutils` (исторически), современные build frontend’ы и backend’ы |
+| **Основные метаданные проекта**: имя, версия, авторы, описание, лицензия, Python version requirement и т.д.                                    | Аргументы `setup(...)`                             | Таблица `[project]`                                                                                   | `pip`, PyPI, `build`, `Poetry`, `Flit`, `Hatch`, `setuptools`                     |
+| **Основные зависимости**: какие библиотеки нужны для работы пакета                                                                             | `install_requires`                                 | `dependencies`                                                                                        | `pip`, `Poetry`, `PDM`, build backend’ы                                           |
+| **Необязательные группы зависимостей**: например, `dev`, `test`, `docs`                                                                        | `extras_require`                                   | `optional-dependencies`                                                                               | `pip install .[dev]`, `Poetry`, `setuptools`                                      |
+| **Описание системы сборки**: какой backend использовать и какие пакеты нужны для сборки проекта                                                | Отдельного стандартного механизма нет              | `[build-system]`                                                                                      | `pip`, `python -m build`, другие build frontend’ы                                 |
+| **CLI и точки входа**: сопоставление имени команды и Python-функции                                                                            | `entry_points`, `console_scripts`                  | `[project.scripts]`, `[project.entry-points]`                                                         | `pip`, `setuptools`, `Poetry`, `Flit`                                             |
+| **Централизация настроек инструментов**: линтеры, форматтеры, тесты, type checker’ы                                                            | Обычно нужны отдельные файлы конфигурации          | `[tool.*]`                                                                                            | `Ruff`, `Black`, `pytest`, `mypy`, `coverage` и др.                               |
+| **Кастомная логика сборки**: генерация кода, C/C++-расширения, нестандартные шаги сборки                                                       | Очень гибкий: можно писать произвольный Python-код | Более ограниченный и предсказуемый; сложная логика обычно переносится в build backend или его плагины | Чаще всего `setuptools`, Cython, backend-specific plugins                         |
+| **Editable install**: установка в режиме разработки без переустановки после каждого изменения                                                  | Поддерживается исторически                         | Поддерживается современным стандартом через backend hooks                                             | `pip install -e .`, PEP 660                                                       |
+| **Статус в экосистеме**: современный способ описывать Python-проект                                                                            | Прямой запуск `python setup.py ...` устарел        | Текущий рекомендуемый стандарт                                                                        | Весь современный packaging ecosystem                                              |
+                                         
 
 ```python
-from importlib.util import (spec_from_file_location, module_from_spec)
-import sys
+# setup.py
+from setuptools import setup, find_packages
 
-spec = spec_from_file_location("module.name", "/path/to/my_package/my_module.py")
-foo = module_from_spec(spec)
-sys.modules["module.name"] = foo
-spec.loader.exec_module(foo)
-foo.MyClass()
-```
-    
-или так:
-
-```python
-import sys
-sys.path.append("/path/to/my_package")
-import my_module
-my_module.MyClass()
-```
-
-Уже лучше, но по-прежнему мы должны помнить, что нужно проверять новые версии, процесс установки полностью ручной, а то, что мы написали в коде, выглядит как костыль. Мы также можем добавить путь к пакету в `PYTHONPATH`, используя `bash`:
-
-```bash
-export PYTHONPATH='/path/to/my_package'
+setup(
+    name="my-cool-app",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "requests>=2.25.1",
+    ],
+    extras_require={
+        "dev": ["pytest", "black"],
+    },
+    entry_points={
+        "console_scripts": [
+            "cool-cli = my_app.main:run",
+        ],
+    },
+)
 ```
 
-Проверить, что переменная установилась, можно, вызвав команду `echo $PYTHONPATH`. После этого можно запустить интерпретатор Python и проверить, что все работает, и что путь уже добавлен в `sys.path` 
+```
+# pyproject.toml
 
-## Ставим через pip, используя git репозиторий
+[build-system]
+# This replaces the need for a setup.py script
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
-Мы добрались до более распространенных способов управления зависимостями. Здесь мы уже используем pip и публично доступный репозиторий на GitHub для установки. Примечание: мы его использовали в предыдущем пункте, но чтобы поставить зависимости устанавливаемой библиотеки, а не саму библиотеку.
+[project]
+name = "my-cool-app"
+version = "0.1.0"
+description = "A modern example project"
+dependencies = [
+    "requests>=2.25.1",
+]
 
-Прежде чем мы перейдем к тому способу, которым мы привыкли пользоваться:
+[project.optional-dependencies]
+dev = ["pytest", "black"]
 
-```bash
-pip install lib_name
+[project.scripts]
+# This replaces entry_points
+cool-cli = "my_app.main:run"
+
+[tool.black]
+# You can now put tool configs here instead of separate files!
+line-length = 88
+target-version = ['py39']
+
 ```
 
-Проговорим еще раз, что существует такой способ. Если вы пропустили предыдущий урок, вернитесь и посмотрите, что должно содержаться в проекте для того, чтобы другие разработчики могли им воспользоваться. Не для всех языков программирования есть аналог `pip`, а понимание того, что в репозитории может содержаться вся необходимая информация для того, чтобы установить/собрать библиотеку, поможет легче найти решение проблемы установки для других языков.
-
-### Немного про pip
-
-Для инфраструктуры `python` менеджер пакетов `pip` является стандартом де факто, хотя появился с текущим именем не так [давно](https://ianbicking.org/blog/2008/10/pyinstall-is-dead-long-live-pip.html). Концепция менеджеров пакетов удобна для программиста, поэтому некоторые языки программирования и фреймворки реализуют ее для управления зависимостями: 
-
-  * JavaScript: npm 
-  * Ruby: gem
-  * .NET: NuGet
-
-Для С++ существует проекты, которые направлены на решение этой проблемы:
-
-  * [bpt](https://github.com/vector-of-bool/dds)
-  * [cpm](http://www.cpm.rocks/)
-  * [conan](https://conan.io/)
-  * [poac](https://github.com/poacpm/poac)
-  * [pacm](http://sourcey.com/pacm/)
-  * [spack](https://spack.io)
-  * [buckaroo](http://buckaroo.pm)
-  * [hunter](https://github.com/ruslo/hunter)
-  * [vcpkg](https://github.com/Microsoft/vcpkg)
-
-В Python также существуют альтернативы `pip`, об одной из них мы поговорим ниже.
-
-Что же делает менеджер пакетов? Первый очевидный ответ: он кладет (а перед этим еще и скачивает их сам из сети) файлы библиотеки в правильное место: там, где его сможет найти язык программирования, чтобы импортировать.
-
-Второе свойство менеджера пакетов: он хранит историю версий библиотеки так, чтобы мы могли установить нужную нам. *Примечание: не путайте версию библиотеки и версию в плане ссылки на конкретный коммит в git; не каждый коммит ведет к обновлению версии библиотеки в менеджере проектов*. Кроме того, менеджер проектов знает, какие зависимости нужны именно этой версии библиотеки, таким образом, у нас есть дерево зависимостей.
-
-Третье: менеджер проектов дает возможность прогнать тесты при установке так, чтобы мы были уверены, что сделали все возможное, чтобы получить работающую библиотеку. При этом никто не гарантирует, что тесты полностью покрывают все возможные ситуации, но часть из них — точно, и всегда неплохая идея проверить хотя бы их.
-
-
-## Делаем сборку библиотеки для публикации. `pip`
-
-Когда нам нужна функциональность какой-либо библиотеки в Python, скорее всего, мы ставим ее через pip:
-
-```bash
-pip install lib_name
-```
-
-Когда мы это делаем, `pip` просматривает публичный репозиторий пакетов Python Package Index (PyPI). Мы также можем [хостить](https://packaging.python.org/en/latest/guides/hosting-your-own-index/) зеркало PyPI, если нам это для чего-то нужно. Если `lib_name` находится в PyPI, будет выполнена попытка установки. В PyPI расположен сам пакет, но в чем же отличие от установки через связку pip+git? Библиотека может распространяться в виде исходных текстовых файлов **Source Distribution (sdist)**  или собранных файлов **Built Distribution (bdist)**. Мы будем использовать `sdist` и `bdist` далее по тексту. 
-
-Процесс создания `sdist` проще, чем `bdist`, и на самом деле, мы уже это проделывали. Для этого вида нужно, чтобы весь исходный код, а также другие необходимые файлы были собраны в одном месте. Среди файлов должен быть `setup.py`, в котором содержатся инструкции для `setuputils`, как правильно собрать пакет. Мы можем создать дистрибутив `sdist`, запустив:
-
-```bash
-python setup.py sdist 
-```
-
-*Напоминание: ранее мы использовали `python setup.py install` для установки*. По умолчанию дистрибутив будет сгенерирован в виде tar-архива (). Другие варианты сжатия можно указать при сборке.
-
-```bash
-python setup.py sdist --formats=zip,gztar,bztar,ztar,tar 
-```
-
-После установки `sdist` файл setup.py запускается на хосте, обеспечивая правильную установку этого пакета. Таким образом, мы при `sdist` получаем исходные тексты программ, которые собираются на нашей системе. 
-
-Второй тип, `bdist`, немного сложнее для разработчика, так как он собирает пакет до того, как опубликовать его. Это убирает необходимость собирать пакет на стороне пользователя, так как он уже получит собранные библиотеки (`.pyc`, `.so`, `.dll`) и может использовать их сразу. На данный момент существуют два основных формата распространения для **bdist** — [eggs и wheels](https://packaging.python.org/en/latest/discussions/wheel-vs-egg/), более современным считается **wheels**.
-
-```bash
-python setup.py bdist_wheel 
-```
-
-#### Преимущества bdist (wheels):
-
-  * меньший объем пакета и более быстрая установка пакетов Python или пакетов с расширениями на языке C;
-  * при сборке из исходных файлов (`sdist`) требуется выполнение произвольного кода для сборки (то, что записано в `setup.py`), что может быть не всегда приемлемо с точки зрения безопасности;
-  * по умолчанию `pip` пытается поставить `bdist`.
-
-Помня о том, что `bdist` является предпочтительным для распространения своего пакета, публикуйте также **sdist**, так как такое распространение позволяет собирать проект под системы, для которых не предоставлен **bdist**.
-
-### Настраиваем окружение
-
-Возьмем проект [mtracker](https://github.com/standlab/mtracker) с предыдущего занятия. Переключимся на ветку `pypi_ready`, чтобы не ломать основной код (и, конечно, еще раз потренируемся с `git`):
-
-```bash
-git clone https://github.com/standlab/mtracker.git
-
-git checkout -b pypi_ready
-```
-
-Добавим несколько нововведений. Ранее мы не использовали никаких дополнительных библиотек, `install_requires=[]`. Сейчас мы хотим добавить библиотеку `matplotlib` в зависимости к проекту. Мы будем использовать виртуальное окружение с помощью `pipenv` (о виртуальных окружениях есть отдельный урок). `pipenv` [комбинирует](https://pythonhow.com/what/what-is-the-difference-between-venv-pyvenv-pyenv-virtualenv-virtualenvwrapper-pipenv/) функциональность виртуального окружения, которое можно получить с помощью `venv` или `virtualenv` c менеджером пакетов `pip`. *Настраивать виртуальное окружение всегда полезно, так как это изолирует все специфичные зависимости. У нас на практике был случай, когда установка библиотеки напрочь сломала среду разработки Spyder (стандартная среда поставки Anaconda)*.
-
-```bash
-pip3 install pipenv
-```
-Переходим в папку проекта `cd ./mtracker`, если не сделали это ранее, и создаем окружение. 
-
-```bash
-pipenv install
-```
-
-или
-
-```bash
-python3 -m pipenv install
-```
-
-После этого появятся два новых файла (проверьте через `git status`): `Pipfile` и `Pipfile.lock`. Содержимое `Pipfile` без дополнительных зависимостей выглядит так:
-
-```bash
-artem@pc:~$ cat Pipfile
-    [[source]]
-    url = "https://pypi.org/simple"
-    verify_ssl = true
-    name = "pypi"
-    
-    [packages]
-    
-    [dev-packages]
-    
-    [requires]
-    python_version = "3.10"
-```
-
-Пустой `Pipfile.lock` содержит примерно ту же информацию. Теперь активируем виртуальное окружение и выполним установку `matplotlib`:
-
-```bash
-pipenv shell
-pipenv install matplotlib
-```
-
-И еще раз взглянем на `Pipfile`:
-
-```bash
-artem@pc:~$ cat Pipfile
-    [[source]]
-    url = "https://pypi.org/simple"
-    verify_ssl = true
-    name = "pypi"
-    
-    [packages]
-    matplotlib = "*"
-    
-    [dev-packages]
-    
-    [requires]
-    python_version = "3.10"
-```
-
-Содержимое `Pipfile.lock` теперь выглядит громоздко, но мы также видим, что там теперь есть информация `matplotlib`, после выполнения `cat Pipfile.lock`. И содержится вся необходимая информация по зависимостям и их версиям.
-
-Теперь мы можем прописать `install_requires` вручную или загрузить из файла:
-
-```python
-import json
-from os import path
-
-here = path.abspath(path.dirname(__file__))
-
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
-
-def read_dependencies(fname):
-    filepath = path.join(here, fname)
-    with open(filepath) as piplock:
-        content = json.load(piplock)
-        return [dependency for dependency in content.get('default')]
-```
-
-Также мы можем выполнить перед сборкой другие операции, которые могут проверить аннотацию типов, форматирование кода, валидность кода, собрать документацию и выполнить тесты. Аннотация типов необязательна для Python, но улучшает читаемость кода. Рассмотрим некоторые из операций, остальные будем изучать на отдельных уроках. Начнем с форматирования кода. В Python общепринятым является оформление согласно [PEP8](https://peps.python.org/pep-0008/). 
-
-*Примечание: предложение по улучшению языка Python [PEP](https://peps.python.org/pep-0000/) (Python Enhancement Proposals) можно считать руководством по хорошим практикам и подходом к решению определенных задач, до которых дошло сообщество Python-разработчиков. **PEP** пронумерованы, и **PEP8** описывает стиль кода на языке Python*. 
-
-#### Немного о форматировании по PEP8
-
-Здесь мы не будем подробно останавливаться на всех рекомендациях из PEP8, но посмотрим на `autopep8`. Этот инструмент поможет нам скорректировать форматирование, например, уберет лишние пробелы или правильно расположит код.
-
-```bash
-(base) artem@pc:~/tmp$ cat sample.py 
-    if foo == 'blah': do_blah_thing()
-    do_one(); do_two(); do_three()
-(base) artem@pc:~/tmp$ autopep8 ./sample.py 
-    if foo == 'blah':
-        do_blah_thing()
-    do_one()
-    do_two()
-    do_three()
-    
-```
-
-Не все, что написано в PEP8, может быть поправлено автоматически, например, `autopep8` не поправит неинформативные комментарии. 
-
-```python
-# line with not usefull comment 
-x = x + 1                 # Increment x
-
-# line with usefull comment 
-x = x + 1                 # Compensate for border
-```
-
-```bash
-(base) artem@pc:~/tmp$ cat sample.py 
-x = x + 1         # Increment x
-(base) artem@pc:~/tmp$ autopep8 ./sample.py 
-x = x + 1         # Increment x
-(base) artem@pc:~/tmp$ 
-```
-
-#### Возвращаемся в проект
-
-Установим `autopep8`, но так как это пакет для сборки, а не зависимость самого кода, сделаем это с флагом `-d`:
-
-```bash
-pipenv install -d autopep8
-```
-
-Посмотрим файл Pipfile и увидим, что в секции `[dev-packages]` появилась новая строка:
-
-```bash
-[dev-packages]
-autopep8 = "*"
-```
-
-Также поставим `pytest`:
-
-```bash
-pipenv install -d pytest
-```
-
-Остальные аспекты пока оставим для дальнейших занятий.
-
-Теперь мы готовы написать Make-файл для сборки своего пакета. Мы использовали `pipenv shell`, чтобы активировать окружение и работать в нем, в makefile мы пропишем явно, что команды выполняются в нашем окружении, т.е. вместо `pytest` мы напишем `pipenv run pytest`, и так далее. В `makefile` мы определяем так называемые `target` (задачи), которые будут выполняться, когда мы напишем `make SPECIFY_TARGET`. Например, для активации окружения и установки зависимостей мы определяем задачу `dev`, и когда мы выполним `make dev`, то выполнится все, что относиться к ней, в нашем случае `pipenv install --dev`. Чтобы определить зависимость от другой задачи, которая должна выполниться заранее, мы указываем ее имя после двоеточия.
-
-```makefile
-help:
-	@echo "Make project with following instructions"
-	@cat Makefile
-
-dev:
-	pipenv install --dev
-
-test: dev
-	pipenv run pytest --doctest-modules --junitxml=junit/test-results.xml
-
-build: clean
-	pipenv install wheel
-	pipenv run python setup.py sdist bdist_wheel
-
-clean:
-	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ dist/ 
-	@find . -not -path './.venv*' -path '*/__pycache__*' -delete
-	@find . -not -path './.venv*' -path '*/*.egg-info*' -delete
-```
-
-Указав `test: dev`, мы сделали опцию `test` зависимой от опции `dev`, и поэтому выполнится сначала она, а затем уже `test`. 
-
-```bash 
-artem@pc:~$ pipenv shell 
-artem@pc:~$ make test
-artem@pc:~$ pip install -e .
-
-
-(base) artem@pc:~$ pytest --doctest-modules --junitxml=junit/test-results.xml
-============================== test session starts ===============================
-platform linux -- Python 3.10.9, pytest-7.2.1, pluggy-1.0.0
-rootdir: /home/artem/swdev/gitrepo/edu/toolchain_proj/mtracker
-collected 1 item                                                                 
-
-test/test_mtracker.py .                                                    [100%]
-
-- generated xml file: /home/artem/swdev/gitrepo/edu/toolchain_proj/mtracker/junit/test-results.xml -
-=============================== 1 passed in 0.06s ================================
-```
-
-
-Мы видим, что тесты проходят, и мы готовы собрать наш проект. Сделаем для начала очистку и посмотрим, какие файлы добавились при сборке.
-
-```bash
-artem@pc:~$ make clean
-artem@pc:~$ ls
-    LICENSE   mtracker  Pipfile.lock  requirements.txt  test
-    Makefile  Pipfile   README.md     setup.py
-artem@pc:~$ make build 
-artem@pc:~$ ls
-    build  LICENSE   mtracker           Pipfile       README.md         setup.py
-    dist   Makefile  mtracker.egg-info  Pipfile.lock  requirements.txt  test
-artem@pc:~$ ls dist
-    mtracker-1.0-py3-none-any.whl
-```
-У нас появилось несколько новых каталогов. И наш собранный пакет расположен в `dist`. Проверим, что mtracker не установлен в нашем окружении, команда ниже ничего не должна вывести.
-
-```bash
-pip list | grep mtracker
-```
-И устанавливаем собранный пакет `mtracker-1.0-py3-none-any.whl`:
-
-```bash
-artem@pc:~$ pip install ./dist/*.whl
-artem@pc:~$ pip list | grep mtracker
-    mtracker         1.0
-```
-
-## Публикация в PyPI
-
-Теперь, когда у нас есть библиотека в собранном виде, мы можем опубликовать ее в PyPI. Чтобы не засорять [основной индекс](https://pypi.org/), можно публиковать в [тестовом](https://test.pypi.org/). Для публикации своей библиотеки мы будем использовать утилиту `twine`.
-
-```bash
-pip install twine
-```
-
-У нас уже есть все для публикации, так как мы уже настроили сборку проекта, и у нас есть как `bdist`, так и `sdist`. Зарегистрируйтесь в [тестовом](https://test.pypi.org/) индексе пакетов и выполните две команды, после чего вам будет предложено ввести логин и пароль, **не забудьте также проверить, что имя библиотеки не занято**.
-
-```bash
-twine check dist/*
-twine upload -r testpypi dist/*
-```
-
-После этого вы (и кто угодно) можете установить библиотеку:
-
-```bash
-python -m pip install -i https://test.pypi.org/simple mtracker
-```
-
-Параметр `-i https://test.pypi.org/simple` нужен только при использовании тестового индекса пакетов.
+[1]: https://packaging.python.org/guides/tool-recommendations/ "Tool recommendations - Python Packaging User Guide"
+[2]: https://packaging.python.org/en/latest/specifications/pyproject-toml/?utm_source=chatgpt.com "pyproject.toml specification"
+[3]: https://packaging.python.org/en/latest/discussions/setup-py-deprecated/ "Is setup.py deprecated? - Python Packaging User Guide"
+[4]: https://pip.pypa.io/en/stable/topics/local-project-installs/ "Local project installs - pip documentation v26.0.1"
+[5]: https://packaging.python.org/en/latest/discussions/package-formats/ "Package Formats - Python Packaging User Guide"
+[6]: https://pip.pypa.io/en/stable/topics/vcs-support/ "VCS Support - pip documentation v26.0.1"
+[7]: https://pip.pypa.io/en/latest/_sources/topics/vcs-support.md.txt "pip.pypa.io"
+[8]: https://python-poetry.org/docs/managing-dependencies/ "
+Managing dependencies | Documentation | Poetry - Python dependency management and packaging made easy
+"
+[9]: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/ "Writing your pyproject.toml - Python Packaging User Guide"
+[10]: https://packaging.python.org/discussions/install-requires-vs-requirements/ "install_requires vs requirements files - Python Packaging User Guide"
+[11]: https://python-poetry.org/docs/managing-dependencies/?utm_source=chatgpt.com "Managing dependencies | Documentation"
+[12]: https://python-poetry.org/docs/main/faq/?utm_source=chatgpt.com "FAQ | main | Documentation | Poetry - Python dependency ..."
+[13]: https://packaging.python.org/guides/using-testpypi/ "Using TestPyPI - Python Packaging User Guide"
