@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'toolchain'
-copyright = '2023, Artem Vesnin'
-author = 'Artem Vesnin'
+copyright = '2025, Artem Vesnin, Maria Khodorova'
+author = 'Artem Vesnin, Maria Khodorova'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------

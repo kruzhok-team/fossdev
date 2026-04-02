@@ -162,6 +162,15 @@ GitHub Pages
    educational_materials/github_pages/exercises.md
    educational_materials/github_pages/quiz.md
 
+GitHub Actions
+============
+
+.. toctree::
+   :maxdepth: 2
+   
+   educational_materials/github_actions/content.md
+
+
 Раздел 3. Инструменты разработки
 ================================
 
